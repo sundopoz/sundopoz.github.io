@@ -1,0 +1,181 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teeraphat Saensom | Personal Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <nav>
+        <div class="container nav-container">
+            <div class="logo">Teeraphat.S</div>
+            <div class="nav-links">
+                <a href="#about">About</a>
+                <a href="#skills">Skills</a>
+                <a href="#experience">Experience</a>
+                <a href="#portfolio">Portfolio</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <section id="hero">
+        <div class="container">
+            <h1 class="hero-name">Teeraphat Saensom</h1>
+            <p class="hero-tagline">Aspiring Computer Science Student with a passion for problem-solving and modern web
+                technologies.</p>
+            <a href="#portfolio" class="btn">View Portfolio</a>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="container">
+            <h2 class="section-title">About Me</h2>
+            <div class="about-content">
+                <p>
+                    I am a dedicated student currently exploring the depths of Computer Science.
+                    My journey is driven by a curiosity for how systems work and a desire to build efficient software
+                    solutions.
+                    Whether it is tackling algorithmic challenges or designing user interfaces, I believe in continuous
+                    learning
+                    and practical application. I am currently looking for opportunities to apply my skills in real-world
+                    projects.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="skills">
+        <div class="container">
+            <h2 class="section-title">Technical Skills</h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <h3>Programming Languages</h3>
+                    <ul class="skill-list">
+                        <li>C / C++</li>
+                        <li>Python</li>
+                        <li>JavaScript (ES6+)</li>
+                        <li>HTML5 & CSS3</li>
+                    </ul>
+                </div>
+                <div class="skill-card">
+                    <h3>Tools & Technologies</h3>
+                    <ul class="skill-list">
+                        <li>Git & GitHub</li>
+                        <li>VS Code</li>
+                        <li>Linux (Ubuntu)</li>
+                        <li>Figma (Basics)</li>
+                    </ul>
+                </div>
+                <div class="skill-card">
+                    <h3>Core Concepts</h3>
+                    <ul class="skill-list">
+                        <li>Data Structures & Algorithms</li>
+                        <li>Object-Oriented Programming</li>
+                        <li>Responsive Web Design</li>
+                        <li>Problem Solving</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="experience">
+        <div class="container">
+            <h2 class="section-title">Experience & Activities</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4 class="timeline-title">Competitive Programming Enthusiast</h4>
+                    <span class="timeline-date">2023 - Present</span>
+                    <p class="timeline-desc">Actively participating in online coding contests (Codeforces, LeetCode) to
+                        sharpen algorithmic thinking and optimization skills.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4 class="timeline-title">High School Computer Club Lead</h4>
+                    <span class="timeline-date">2022 - 2023</span>
+                    <p class="timeline-desc">Organized workshops for junior students on basic Python programming and web
+                        development fundamentals.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4 class="timeline-title">Personal Development</h4>
+                    <span class="timeline-date">Ongoing</span>
+                    <p class="timeline-desc">Self-studying full-stack development through documentation and building
+                        small-scale projects.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="portfolio">
+        <div class="container">
+            <h2 class="section-title">Featured Projects</h2>
+            <div class="portfolio-grid">
+                <div class="project-card">
+                    <div class="project-info">
+                        <h3 class="project-title">Algorithm Visualizer</h3>
+                        <p class="project-desc">A web-based tool to visualize sorting algorithms like Bubble Sort and
+                            Merge Sort in real-time.</p>
+                        <a href="#" class="project-link">View on GitHub →</a>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-info">
+                        <h3 class="project-title">Personal Task Manager</h3>
+                        <p class="project-desc">A minimal To-Do list application built with vanilla JavaScript and
+                            LocalStorage for data persistence.</p>
+                        <a href="#" class="project-link">View Demo →</a>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-info">
+                        <h3 class="project-title">Weather Dashboard</h3>
+                        <p class="project-desc">Fetches real-time weather data using a public API and displays it in a
+                            responsive card layout.</p>
+                        <a href="#" class="project-link">View Source →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="container contact-container">
+            <h2 class="section-title">Get In Touch</h2>
+            <div class="contact-info">
+                <p>Feel free to reach out for collaborations or just a friendly hello!</p>
+                <p><strong>Email:</strong> toto2562toto@gmail.com</p>
+            </div>
+            <div class="social-links">
+                <a href="https://github.com/sundopoz" class="social-btn">GitHub</a>
+                <a href="https://www.linkedin.com/in/teerapat-sansom-503b84387/" class="social-btn">LinkedIn</a>
+                <a href="#" class="social-btn">Twitter</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Teeraphat Saensom. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
+
+```
