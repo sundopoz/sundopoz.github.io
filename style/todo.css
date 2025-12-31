@@ -1,0 +1,214 @@
+:root {
+    --bg-primary: #f8f9fa;
+    --bg-secondary: #ffffff;
+    --text-normal: #333333;
+    --text-muted: #2c3e50;
+    --accent: #3498db;
+    /* Obsidian-ish Purple */
+    --accent-hover: #9e7aff;
+    --border: #e0e0e0;
+    --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --radius: 6px;
+}
+
+/* RESET & BASE */
+* {
+    box-sizing: border-box;
+    outline: none;
+}
+
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-normal);
+    font-family: var(--font-main);
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding-top: 50px;
+}
+
+/* CONTAINER */
+.app-container {
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+}
+
+/* HEADER */
+header {
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 15px;
+}
+
+h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+.stats {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 5px;
+}
+
+/* INPUT AREA */
+.input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    background: var(--bg-secondary);
+    padding: 10px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+input[type="text"] {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-normal);
+    font-size: 1rem;
+    padding: 8px;
+}
+
+input[type="text"]::placeholder {
+    color: var(--text-muted);
+}
+
+button.add-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+button.add-btn:hover {
+    background: var(--accent-hover);
+}
+
+/* TASK LIST */
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    background: var(--bg-secondary);
+    margin-bottom: 8px;
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+    transition: transform 0.2s, border-color 0.2s;
+    group: task;
+}
+
+.task-item:hover {
+    border-color: var(--border);
+    transform: translateY(-1px);
+}
+
+/* CUSTOM CHECKBOX */
+.checkbox-wrapper {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    margin-right: 15px;
+    cursor: pointer;
+}
+
+.checkbox-wrapper input {
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    z-index: 2;
+    position: absolute;
+}
+
+.custom-checkbox {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--text-muted);
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.checkbox-wrapper input:checked+.custom-checkbox {
+    background-color: var(--accent);
+    border-color: var(--accent);
+}
+
+.checkbox-wrapper input:checked+.custom-checkbox::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/* TASK CONTENT (EDITABLE) */
+.task-content {
+    flex: 1;
+    font-size: 1rem;
+    cursor: text;
+    padding: 2px 5px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.task-content:focus {
+    background: #333;
+}
+
+.task-item.completed .task-content {
+    text-decoration: line-through;
+    color: var(--text-muted);
+}
+
+/* DELETE BUTTON */
+.delete-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 5px 10px;
+    opacity: 0;
+    transition: opacity 0.2s, color 0.2s;
+}
+
+.task-item:hover .delete-btn {
+    opacity: 1;
+}
+
+.delete-btn:hover {
+    color: #ff5252;
+}
+
+/* EMPTY STATE */
+.empty-state {
+    text-align: center;
+    color: var(--text-muted);
+    margin-top: 50px;
+    font-style: italic;
+    display: none;
+}

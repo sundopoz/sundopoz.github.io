@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obsidian Style To-Do</title>
+    <link rel="stylesheet" href="style/todo.css">
+</head>
+
+<body>
+
+    <div class="app-container">
+        <header>
+            <h1>Tasks</h1>
+            <div class="stats" id="stats">0 tasks remaining</div>
+        </header>
+
+        <div class="input-group">
+            <input type="text" id="todo-input" placeholder="What needs to be done?">
+            <button class="add-btn" id="add-btn">Add</button>
+        </div>
+
+        <ul id="todo-list">
+        </ul>
+
+        <div class="empty-state" id="empty-state">
+            All caught up! No tasks pending.
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const todoInput = document.getElementById('todo-input');
+        const addBtn = document.getElementById('add-btn');
+        const todoList = document.getElementById('todo-list');
+        const emptyState = document.getElementById('empty-state');
+        const statsDisplay = document.getElementById('stats');
+
+        // State Management
+        let tasks = JSON.parse(localStorage.getItem('obsidian-todos')) || [];
+
+        // --- CORE FUNCTIONS ---
+
+        function saveLocal() {
+            localStorage.setItem('obsidian-todos', JSON.stringify(tasks));
+            render();
+        }
+
+        function addTask(text) {
+            if (text.trim() === '') return;
+
+            const newTask = {
+                id: Date.now(),
+                text: text,
+                completed: false
+            };
+
+            tasks.unshift(newTask); // Add to top
+            saveLocal();
+            todoInput.value = '';
+            todoInput.focus();
+        }
+
+        function toggleTask(id) {
+            tasks = tasks.map(task =>
+                task.id === id ? { ...task, completed: !task.completed } : task
+            );
+            saveLocal();
+        }
+
+        function deleteTask(id) {
+            tasks = tasks.filter(task => task.id !== id);
+            saveLocal();
+        }
+
+        function updateTaskText(id, newText) {
+            tasks = tasks.map(task =>
+                task.id === id ? { ...task, text: newText } : task
+            );
+            saveLocal(); // Ensure this is saving text changes
+        }
+
+        // --- RENDERING ---
+
+        function render() {
+            todoList.innerHTML = '';
+
+            // Check empty state
+            if (tasks.length === 0) {
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+            }
+
+            // Calculate stats
+            const pendingCount = tasks.filter(t => !t.completed).length;
+            statsDisplay.textContent = `${pendingCount} task${pendingCount !== 1 ? 's' : ''} remaining`;
+
+            // Render List
+            tasks.forEach(task => {
+                const li = document.createElement('li');
+                li.className = `task-item ${task.completed ? 'completed' : ''}`;
+
+                li.innerHTML = `
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${task.id})">
+                        <span class="custom-checkbox"></span>
+                    </label>
+                    <div 
+                        class="task-content" 
+                        contenteditable="true" 
+                        onblur="handleEdit(this, ${task.id})"
+                        onkeypress="handleEnter(event, this)"
+                    >${task.text}</div>
+                    <button class="delete-btn" onclick="deleteTask(${task.id})">&times;</button>
+                `;
+
+                todoList.appendChild(li);
+            });
+        }
+
+        // --- EVENT HANDLERS ---
+
+        // Add Button Click
+        addBtn.addEventListener('click', () => {
+            addTask(todoInput.value);
+        });
+
+        // Add on "Enter" key in main input
+        todoInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addTask(todoInput.value);
+        });
+
+        // Handle inline editing (saving on blur)
+        window.handleEdit = function (element, id) {
+            const newText = element.innerText.trim();
+            if (newText === '') {
+                deleteTask(id); // If empty, delete
+            } else {
+                updateTaskText(id, newText);
+            }
+        };
+
+        // Handle "Enter" inside contenteditable (prevent newline, just blur to save)
+        window.handleEnter = function (e, element) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                element.blur();
+            }
+        };
+
+        // Initialize
+        render();
+
+    </script>
+</body>
+
+</html>
