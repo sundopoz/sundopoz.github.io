@@ -1,0 +1,129 @@
+let counters = JSON.parse(localStorage.getItem('myCounters')) || [];
+
+// If fresh load with no data, create one default counter
+if (counters.length === 0) {
+  counters = [{ id: Date.now(), title: 'Counter 1', count: 0, step: 1 }];
+}
+
+const listEl = document.getElementById('counterList');
+const emptyState = document.getElementById('emptyState');
+const themeToggle = document.getElementById('themeToggle');
+
+// --- THEME LOGIC ---
+const savedTheme = localStorage.getItem('theme') || 'light';
+document.documentElement.setAttribute('data-theme', savedTheme);
+themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+themeToggle.addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-theme');
+  const newTheme = current === 'dark' ? 'light' : 'dark';
+
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+  themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+});
+
+// --- CORE FUNCTIONS ---
+
+function save() {
+  localStorage.setItem('myCounters', JSON.stringify(counters));
+  render();
+}
+
+function addNewCounter() {
+  const newId = Date.now();
+  counters.push({
+    id: newId,
+    title: `Counter ${counters.length + 1}`,
+    count: 0,
+    step: 1
+  });
+  save();
+  // Scroll to bottom smoothly
+  setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 100);
+}
+
+function removeCounter(id) {
+  if (confirm('Delete this counter?')) {
+    counters = counters.filter(c => c.id !== id);
+    save();
+  }
+}
+
+function updateCount(id, delta) {
+  const counter = counters.find(c => c.id === id);
+  if (counter) {
+    counter.count += delta;
+    save();
+  }
+}
+
+function updateStep(id, val) {
+  const counter = counters.find(c => c.id === id);
+  if (counter) {
+    counter.step = Number(val);
+    // We don't call save() here on every keystroke to avoid UI jitter, 
+    // but we save on blur (handled in HTML event)
+    localStorage.setItem('myCounters', JSON.stringify(counters));
+  }
+}
+
+function updateTitle(id, val) {
+  const counter = counters.find(c => c.id === id);
+  if (counter) {
+    counter.title = val;
+    localStorage.setItem('myCounters', JSON.stringify(counters));
+  }
+}
+
+// --- RENDER ---
+function render() {
+  listEl.innerHTML = '';
+
+  if (counters.length === 0) {
+    emptyState.style.display = 'block';
+    return;
+  } else {
+    emptyState.style.display = 'none';
+  }
+
+  counters.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'counter-card';
+    div.innerHTML = `
+                    <div class="card-header">
+                        <input 
+                            type="text" 
+                            class="counter-title" 
+                            value="${c.title}" 
+                            onchange="updateTitle(${c.id}, this.value)"
+                            aria-label="Counter Name"
+                        >
+                        <button class="btn-delete" onclick="removeCounter(${c.id})" title="Delete">🗑️</button>
+                    </div>
+
+                    <div class="count-display">${c.count}</div>
+
+                    <div class="controls">
+                        <button class="btn-control" onclick="updateCount(${c.id}, -${c.step})">−</button>
+                        
+                        <div class="step-input-wrapper">
+                            <label class="step-label">Step</label>
+                            <input 
+                                type="number" 
+                                class="step-input" 
+                                value="${c.step}" 
+                                onchange="updateStep(${c.id}, this.value)"
+                                title="Change the number added/subtracted"
+                            >
+                        </div>
+
+                        <button class="btn-control" onclick="updateCount(${c.id}, ${c.step})">+</button>
+                    </div>
+                `;
+    listEl.appendChild(div);
+  });
+}
+
+// Initial Render
+render();
