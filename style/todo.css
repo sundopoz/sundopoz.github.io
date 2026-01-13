@@ -64,7 +64,7 @@ h1 {
     padding: 10px;
     border-radius: var(--radius);
     border: 1px solid var(--border);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(192, 192, 192, 0.1);
 }
 
 input[type="text"] {
@@ -111,7 +111,7 @@ ul {
     border-radius: var(--radius);
     border: 1px solid transparent;
     transition: transform 0.2s, border-color 0.2s;
-    group: task;
+    /* group: task; */
 }
 
 .task-item:hover {
@@ -176,7 +176,7 @@ ul {
 }
 
 .task-content:focus {
-    background: #333;
+    background: #eaeaea;
 }
 
 .task-item.completed .task-content {
