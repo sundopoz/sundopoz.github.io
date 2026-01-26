@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JLPT N2 Success Hub</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&family=Noto+Sans+JP:wght@400;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style/jp.css">
+</head>
+
+<body>
+
+  <div id="cover">
+    <h1>N2 SUCCESS</h1>
+    <p>12 Months • Discipline • Mastery</p>
+    <button class="btn-enter" onclick="enterSite()">START JOURNEY</button>
+  </div>
+
+  <div id="main-content">
+    <nav>
+      <a href="#" onclick="showSection('roadmap', this)" class="active">ROADMAP</a>
+      <a href="#" onclick="showSection('todo', this)">DAILY TODO</a>
+      <a href="#" onclick="showSection('grammar', this)">GRAMMAR</a>
+      <a href="#" onclick="showSection('resources', this)">RESOURCES</a>
+    </nav>
+
+    <div class="container">
+      <section id="roadmap" class="active">
+        <h2>12-Month Roadmap</h2>
+        <div class="roadmap-grid" id="roadmap-container">
+        </div>
+      </section>
+
+      <section id="todo">
+        <h2>Daily Discipline</h2>
+        <div class="todo-box">
+          <div class="todo-input-group">
+            <input type="text" id="todo-input" placeholder="เพิ่มงานที่ต้องทำวันนี้...">
+            <button class="btn-add" onclick="addTodo()">ADD</button>
+          </div>
+          <div id="todo-list"></div>
+          <p style="font-size: 0.8rem; color: gray; margin-top: 20px;">*รีเซ็ตลิสต์นี้ได้ทุกวันเพื่อเริ่มใหม่</p>
+        </div>
+      </section>
+
+      <section id="grammar">
+        <h2>Grammar Hierarchy</h2>
+        <div class="grid-list">
+          <div class="info-card">
+            <h3>N5 - N4 (Foundation)</h3>
+            <ul>
+              <li>คำช่วยพื้นฐาน (は, が, を, に)</li>
+              <li>การผันกริยา (รูปพจนานุกรม, Te, Nai, Ta)</li>
+              <li>รูปสุภาพ vs รูปธรรมดา</li>
+            </ul>
+          </div>
+          <div class="info-card">
+            <h3>N3 (Intermediate)</h3>
+            <ul>
+              <li>ไวยากรณ์แสดงความรู้สึก (はず, わけ, つもり)</li>
+              <li>การเชื่อมประโยคที่ซับซ้อนขึ้น</li>
+              <li>รูปถูกกระทำ และ รูปให้กระทำ</li>
+            </ul>
+          </div>
+          <div class="info-card">
+            <h3>N2 (Advanced)</h3>
+            <ul>
+              <li>ไวยากรณ์ภาษาเขียน/ทางการ</li>
+              <li>สำนวนเฉพาะด้าน (ธุรกิจ, ข่าว)</li>
+              <li>ความหมายแฝงและความรู้สึกของผู้พูด</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="resources">
+        <h2>Learning Resources</h2>
+        <div class="info-card">
+          <a href="https://guidetojapanese.org/learn/" target="_blank" class="resource-link">🌐 Tae Kim's Guide
+            (ไวยากรณ์ฟรีที่ดีที่สุด)</a>
+          <a href="https://www.nhk.or.jp/lesson/english/" target="_blank" class="resource-link">📻 NHK News Web Easy
+            (ฝึกอ่านข่าว)</a>
+          <a href="https://apps.ankiweb.net/" target="_blank" class="resource-link">📱 Anki Flashcards
+            (จำศัพท์ระดับเทพ)</a>
+          <a href="https://www.youtube.com/@JapaneseAmmoWithMisa" target="_blank" class="resource-link">📺 Japanese Ammo
+            with Misa (อธิบายละเอียดมาก)</a>
+          <a href="https://jlpt.jp/e/samples/sampleindex.html" target="_blank" class="resource-link">📝 JLPT Official
+            Sample Questions</a>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="script/jp.js"></script>
+</body>
+
+</html>
