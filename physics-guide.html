@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Physics Guide — สอวน./IPhO</title>
+<style>
+:root{
+  --bg:#0d1117;--surface:#161b22;--surface2:#1c2433;--border:#2a3340;
+  --text:#e2e8f0;--muted:#8892a4;
+  --accent:#f0883e;--blue:#79b8ff;--green:#85e89d;
+  --yellow:#f6e05e;--red:#f97583;--purple:#b392f0;--teal:#39d4a5;
+  --r:8px;--w:920px;
+  --font:system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:ui-monospace,'Cascadia Code','JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased}
+
+/* NAV */
+.topnav{position:sticky;top:0;z-index:100;background:rgba(13,17,23,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:12px}
+.back-btn{display:flex;align-items:center;gap:6px;color:var(--accent);text-decoration:none;font-size:13px;font-weight:500;cursor:pointer;background:none;border:none;transition:opacity .15s}
+.back-btn:hover{opacity:.7}
+.nav-sep{color:var(--border)}
+#nav-cur{font-size:13px;color:var(--muted)}
+#back-wrap{display:none}
+
+/* PAGES */
+.page{display:none;padding-bottom:80px}
+.page.active{display:block}
+
+/* HERO */
+.hero{padding:36px 20px 28px;max-width:var(--w);margin:0 auto;border-bottom:1px solid var(--border)}
+.topic-tag{font-size:11px;text-transform:uppercase;letter-spacing:2.5px;color:var(--accent);margin-bottom:8px;font-weight:600}
+.topic-title{font-size:clamp(26px,5vw,40px);font-weight:700;line-height:1.15;margin-bottom:10px}
+.topic-sub{color:var(--muted);font-size:14px;max-width:620px}
+
+/* LAYOUT */
+.wrap{max-width:var(--w);margin:0 auto;padding:0 20px}
+.section{margin-top:40px}
+.sec-label{font-size:10px;text-transform:uppercase;letter-spacing:3px;color:var(--accent);padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:20px;font-weight:600}
+
+/* FLOW */
+.flow{display:flex;flex-direction:column}
+.fstep{display:grid;grid-template-columns:44px 1fr;column-gap:16px;position:relative}
+.fstep:not(:last-child)::before{content:'';position:absolute;left:21px;top:44px;bottom:0;width:2px;background:var(--border)}
+.fnum{width:44px;height:44px;border-radius:50%;background:var(--surface);border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent);flex-shrink:0;z-index:1}
+.fbody{padding-bottom:24px;padding-top:9px}
+.ftitle{font-size:15px;font-weight:600;margin-bottom:5px}
+.fdesc{font-size:13px;color:var(--muted);margin-bottom:10px;line-height:1.5}
+
+/* BRANCHES */
+.branches{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:8px;margin-top:8px}
+.br{background:var(--surface);border:1px solid var(--border);border-left:3px solid;border-radius:0 var(--r) var(--r) 0;padding:10px 12px}
+.br.if{border-left-color:var(--yellow)}.br.then{border-left-color:var(--green)}
+.br.warn{border-left-color:var(--red)}.br.note{border-left-color:var(--blue)}.br.alt{border-left-color:var(--purple)}
+.brlabel{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.br.if .brlabel{color:var(--yellow)}.br.then .brlabel{color:var(--green)}
+.br.warn .brlabel{color:var(--red)}.br.note .brlabel{color:var(--blue)}.br.alt .brlabel{color:var(--purple)}
+.brtext{font-size:13px;line-height:1.45}
+
+/* EQUATIONS */
+.eq-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:10px}
+.eq{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 15px;transition:border-color .15s}
+.eq:hover{border-color:var(--blue)}
+.eq-name{font-size:11px;color:var(--muted);margin-bottom:8px;letter-spacing:.3px}
+.eq-f{font-family:var(--mono);font-size:14px;color:var(--blue);margin-bottom:6px;line-height:1.65}
+.eq-note{font-size:12px;color:var(--muted);line-height:1.4}
+
+/* PITFALLS */
+.pitfalls{display:flex;flex-direction:column;gap:8px}
+.pit{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:0 var(--r) var(--r) 0;padding:12px 14px;display:flex;gap:12px;align-items:flex-start}
+.pit-ico{font-size:16px;flex-shrink:0;margin-top:1px}
+.pit-title{font-size:14px;font-weight:600;color:var(--red);margin-bottom:3px}
+.pit-desc{font-size:13px;color:var(--muted);line-height:1.45}
+
+/* CHECKS */
+.checks{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:10px}
+.chk{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--green);border-radius:0 0 var(--r) var(--r);padding:12px 13px}
+.chk-name{font-size:13px;font-weight:600;color:var(--green);margin-bottom:4px}
+.chk-desc{font-size:12px;color:var(--muted);line-height:1.4}
+
+/* TIP */
+.tip{background:rgba(121,184,255,.06);border:1px solid rgba(121,184,255,.18);border-radius:var(--r);padding:12px 14px;font-size:13px;line-height:1.5;margin-top:10px}
+.tip b{color:var(--blue)}
+.tip-g{background:rgba(133,232,157,.06);border-color:rgba(133,232,157,.18)}
+.tip-g b{color:var(--green)}
+
+/* ACCORDION */
+details{border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-top:8px}
+details+details{margin-top:6px}
+summary{background:var(--surface);padding:12px 15px;cursor:pointer;font-size:14px;font-weight:500;display:flex;justify-content:space-between;align-items:center;user-select:none;list-style:none;transition:background .15s}
+summary:hover{background:var(--surface2)}
+summary::-webkit-details-marker{display:none}
+summary::after{content:'+';color:var(--accent);font-size:18px;font-weight:300;margin-left:8px}
+details[open] summary::after{content:'−'}
+details[open] summary{border-bottom:1px solid var(--border)}
+.d-body{padding:14px 15px}
+
+/* INDEX CARDS */
+.index-hero{padding:40px 20px 32px;max-width:var(--w);margin:0 auto}
+.index-title{font-size:clamp(28px,6vw,48px);font-weight:700;line-height:1.1;margin-bottom:10px}
+.index-sub{color:var(--muted);font-size:15px;max-width:580px}
+.cat-label{font-size:10px;text-transform:uppercase;letter-spacing:3px;color:var(--accent);font-weight:600;margin:36px 0 14px}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;cursor:pointer;text-decoration:none;display:block;transition:border-color .15s,transform .1s}
+.card:hover{border-color:var(--accent);transform:translateY(-1px)}
+.card-num{font-size:11px;color:var(--muted);margin-bottom:6px;font-family:var(--mono)}
+.card-title{font-size:16px;font-weight:600;margin-bottom:4px}
+.card-th{font-size:13px;color:var(--muted)}
+
+/* PAGE FOOTER */
+.page-footer{max-width:var(--w);margin:50px auto 0;padding:20px;border-top:1px solid var(--border);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;align-items:center}
+.foot-btn{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);color:var(--text);text-decoration:none;font-size:13px;cursor:pointer;transition:all .15s;font-family:inherit}
+.foot-btn:hover{border-color:var(--accent);color:var(--accent)}
+.foot-home{border-color:rgba(240,136,62,.3);color:var(--accent)}
+.foot-home:hover{background:rgba(240,136,62,.08)}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  .branches,.eq-grid{grid-template-columns:1fr}
+  .checks{grid-template-columns:1fr 1fr}
+  .hero,.index-hero{padding:28px 16px 20px}
+  .wrap{padding:0 16px}
+}
+@media(max-width:380px){.checks{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span id="back-wrap"><button class="back-btn" onclick="goIndex()">← กลับ</button><span class="nav-sep">/</span></span>
+  <span id="nav-cur">Physics Guide</span>
+</nav>
+
+<!-- ════════════════════════════════════ INDEX ════════════════════════════════════ -->
+<div id="p-index" class="page active">
+<div class="index-hero wrap">
+  <p class="topic-tag">Physics Guide · สอวน. / IPhO</p>
+  <h1 class="index-title">วิเคราะห์โจทย์ฟิสิกส์<br><span style="font-size:.55em;color:var(--muted);font-weight:400">Decision Workflows + Key Equations</span></h1>
+  <p class="index-sub">กรอบคิดและ workflow สำหรับทุกหัวข้อ · เลือกหัวข้อเพื่อดู decision flow, สมการสำคัญ, pitfalls และ sanity checks</p>
+</div>
+<div class="wrap">
+  <p class="cat-label">⚙ Mechanics</p>
+  <div class="card-grid">
+    <div class="card" onclick="go('01')"><p class="card-num">01</p><p class="card-title">Kinematics</p><p class="card-th">จลนศาสตร์ · SUVAT · projectile · relative motion</p></div>
+    <div class="card" onclick="go('02')"><p class="card-num">02</p><p class="card-title">Dynamics</p><p class="card-th">Newton's Laws · FBD · friction · constraint forces</p></div>
+    <div class="card" onclick="go('03')"><p class="card-num">03</p><p class="card-title">Energy</p><p class="card-th">Work-Energy theorem · conservative forces · power</p></div>
+    <div class="card" onclick="go('04')"><p class="card-num">04</p><p class="card-title">Momentum</p><p class="card-th">Impulse · collisions · center of mass frame</p></div>
+    <div class="card" onclick="go('05')"><p class="card-num">05</p><p class="card-title">Rotation</p><p class="card-th">Torque · moment of inertia · rolling · angular momentum</p></div>
+    <div class="card" onclick="go('06')"><p class="card-num">06</p><p class="card-title">SHM</p><p class="card-th">Simple Harmonic Motion · damping · coupled oscillators</p></div>
+    <div class="card" onclick="go('07')"><p class="card-num">07</p><p class="card-title">Gravitation</p><p class="card-th">Gauss's law for gravity · orbits · Kepler's laws</p></div>
+  </div>
+  <p class="cat-label">💧 Fluids &amp; Thermodynamics</p>
+  <div class="card-grid">
+    <div class="card" onclick="go('08')"><p class="card-num">08</p><p class="card-title">Fluid Mechanics</p><p class="card-th">Statics · Bernoulli · continuity · momentum theorem</p></div>
+    <div class="card" onclick="go('09')"><p class="card-num">09</p><p class="card-title">Thermodynamics</p><p class="card-th">PV diagram · processes · Carnot · entropy</p></div>
+  </div>
+  <p class="cat-label">〰 Waves &amp; Optics</p>
+  <div class="card-grid">
+    <div class="card" onclick="go('10')"><p class="card-num">10</p><p class="card-title">Waves</p><p class="card-th">Standing waves · interference · Doppler · intensity</p></div>
+    <div class="card" onclick="go('11')"><p class="card-num">11</p><p class="card-title">Optics</p><p class="card-th">Geometric optics · Snell's law · thin film · diffraction</p></div>
+  </div>
+  <p class="cat-label">⚡ Electromagnetism</p>
+  <div class="card-grid">
+    <div class="card" onclick="go('12')"><p class="card-num">12</p><p class="card-title">Electrostatics</p><p class="card-th">Gauss's law · potential · conductors · capacitors</p></div>
+    <div class="card" onclick="go('13')"><p class="card-num">13</p><p class="card-title">DC Circuits</p><p class="card-th">Kirchhoff · Thevenin · RC transients</p></div>
+    <div class="card" onclick="go('14')"><p class="card-num">14</p><p class="card-title">Magnetism</p><p class="card-th">Ampere · Faraday · Lenz · inductance</p></div>
+  </div>
+  <p class="cat-label">⚛ Modern Physics</p>
+  <div class="card-grid">
+    <div class="card" onclick="go('15')"><p class="card-num">15</p><p class="card-title">Modern Physics</p><p class="card-th">Special Relativity · Quantum basics · Nuclear</p></div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════ 01 KINEMATICS ════════════════════════════════════ -->
+<div id="p-01" class="page">
+<div class="hero"><p class="topic-tag">01 · Mechanics</p>
+<h1 class="topic-title">Kinematics<br><span style="font-size:.55em;color:var(--muted);font-weight:400">จลนศาสตร์</span></h1>
+<p class="topic-sub">ศึกษาการเคลื่อนที่โดยไม่สนใจสาเหตุ · position, velocity, acceleration และ time คือตัวแปรหลัก</p></div>
+<div class="wrap">
+<div class="section"><p class="sec-label">Decision Workflow</p>
+<div class="flow">
+<div class="fstep"><div class="fnum">1</div><div class="fbody">
+<p class="ftitle">ระบุตัวแปรที่รู้ vs ไม่รู้</p>
+<p class="fdesc">จดตาราง: รู้ s? u? v? a? t? ต้องการหาอะไร? ถ้ามีตัวที่รู้ 3 ตัวจาก 5 → เลือก SUVAT ที่ไม่มีตัวไม่รู้นั้นอยู่</p>
+<div class="branches">
+<div class="br if"><p class="brlabel">a คงที่</p><p class="brtext">ใช้ SUVAT equations ตรงๆ ไม่ต้อง integrate</p></div>
+<div class="br if"><p class="brlabel">a = f(t)</p><p class="brtext">v = ∫a dt · x = ∫v dt</p></div>
+<div class="br if"><p class="brlabel">a = f(x)</p><p class="brtext">ใช้ a = v(dv/dx) เพื่อหา v–x relation</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">2</div><div class="fbody">
+<p class="ftitle">มีกี่วัตถุ / กี่มิติ?</p>
+<p class="fdesc">2D ต้องแยก x และ y components เสมอ ทั้งสองทิศเป็นอิสระต่อกัน</p>
+<div class="branches">
+<div class="br then"><p class="brlabel">Projectile</p><p class="brtext">x: vₓ = v₀cosθ คงที่ · y: aᵧ = −g · แยกคำนวณ</p></div>
+<div class="br then"><p class="brlabel">หลายวัตถุ</p><p class="brtext">หา relative kinematics: xₐ − x_b · เงื่อนไข collision = xₐ = x_b</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">3</div><div class="fbody">
+<p class="ftitle">มี path constraint ไหม?</p>
+<p class="fdesc">ถ้าเคลื่อนที่บน curve y = f(x) ให้ differentiate path เพื่อหา vᵧ/vₓ และ aᵧ/aₓ</p>
+<div class="branches">
+<div class="br note"><p class="brlabel">เช่น วงกลม</p><p class="brtext">centripetal a = v²/r · เพิ่ม tangential a ถ้า speed เปลี่ยน</p></div>
+</div></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Key Equations</p>
+<details open><summary>SUVAT (a คงที่)</summary><div class="d-body"><div class="eq-grid">
+<div class="eq"><p class="eq-name">v = u + at</p><p class="eq-f">v = u + at</p><p class="eq-note">ไม่มี s</p></div>
+<div class="eq"><p class="eq-name">s = ut + ½at²</p><p class="eq-f">s = ut + ½at²</p><p class="eq-note">ไม่มี v</p></div>
+<div class="eq"><p class="eq-name">v² = u² + 2as</p><p class="eq-f">v² = u² + 2as</p><p class="eq-note">ไม่มี t</p></div>
+<div class="eq"><p class="eq-name">s = ½(u+v)t</p><p class="eq-f">s = ½(u+v)t</p><p class="eq-note">ไม่มี a</p></div>
+<div class="eq"><p class="eq-name">Projectile range</p><p class="eq-f">R = v₀²sin(2θ)/g</p><p class="eq-note">θ = 45° → max range</p></div>
+<div class="eq"><p class="eq-name">Centripetal</p><p class="eq-f">a_c = v²/r = ω²r</p></div>
+</div></div></details>
+</div>
+<div class="section"><p class="sec-label">Common Pitfalls</p>
+<div class="pitfalls">
+<div class="pit"><span class="pit-ico">⚠️</span><div><p class="pit-title">Projectile: vₓ ≠ 0 ตลอดทาง</p><p class="pit-desc">แนวนอนไม่มีแรง → vₓ คงที่ตลอด · aₓ = 0 เสมอ ไม่มี cos(θ) ในแนวนอนหลังออกจากมือ</p></div></div>
+<div class="pit"><span class="pit-ico">⚠️</span><div><p class="pit-title">เลือก SUVAT ผิดตัว</p><p class="pit-desc">จดตาราง known/unknown ก่อนเสมอ แล้วเลือก equation ที่มีตัวไม่รู้แค่ 1 ตัว</p></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Sanity Checks</p>
+<div class="checks">
+<div class="chk"><p class="chk-name">Dimension</p><p class="chk-desc">ทุก term ต้องมีหน่วยเดียวกัน</p></div>
+<div class="chk"><p class="chk-name">t ≥ 0</p><p class="chk-desc">เวลาต้องไม่ติดลบ</p></div>
+<div class="chk"><p class="chk-name">Limit</p><p class="chk-desc">θ=0, θ=90°: ผลสมเหตุสมผลไหม?</p></div>
+<div class="chk"><p class="chk-name">Sign</p><p class="chk-desc">กำหนด +/− ทิศทางแล้วยึดตลอด</p></div>
+</div></div>
+</div>
+<div class="page-footer">
+<button class="foot-btn" onclick="goIndex()">⚛ หน้าแรก</button>
+<button class="foot-btn" onclick="go('02')">02 Dynamics →</button>
+</div></div>
+
+<!-- ════════════════════════════════════ 02 DYNAMICS ════════════════════════════════════ -->
+<div id="p-02" class="page">
+<div class="hero"><p class="topic-tag">02 · Mechanics</p>
+<h1 class="topic-title">Dynamics<br><span style="font-size:.55em;color:var(--muted);font-weight:400">พลศาสตร์ · Newton's Laws</span></h1>
+<p class="topic-sub">FBD ทุกวัตถุแยกกัน ห้ามข้าม · เขียน ΣF = ma ทุกทิศ · ระบุ friction regime ก่อนใช้ค่า μ</p></div>
+<div class="wrap">
+<div class="section"><p class="sec-label">Decision Workflow</p>
+<div class="flow">
+<div class="fstep"><div class="fnum">1</div><div class="fbody">
+<p class="ftitle">วาด Free Body Diagram ทุกวัตถุแยกกัน</p>
+<p class="fdesc">ห้ามรวมวัตถุ · วาดแรงทุกแรงที่กระทำต่อวัตถุนั้นเท่านั้น ไม่วาดแรงที่วัตถุนั้นกระทำต่อผู้อื่น</p>
+<div class="branches">
+<div class="br warn"><p class="brlabel">ห้ามลืม</p><p class="brtext">Normal force N · tension T · friction f · weight mg · constraint force</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">2</div><div class="fbody">
+<p class="ftitle">เลือก coordinate system ที่ชาญฉลาด</p>
+<p class="fdesc">แกนขนานกับ acceleration เสมอ · บนพื้นเอียง: แกน x ขนานกับพื้นเอียง → ลด component</p>
+<div class="branches">
+<div class="br then"><p class="brlabel">เขียน ΣF = ma</p><p class="brtext">ทุก component แยกกัน: ΣFₓ = maₓ · ΣFᵧ = maᵧ</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">3</div><div class="fbody">
+<p class="ftitle">ระบุ Friction Regime</p>
+<p class="fdesc">ต้องถามก่อนว่า static หรือ kinetic? → ใช้ค่า μ ที่ถูกต้อง</p>
+<div class="branches">
+<div class="br if"><p class="brlabel">Assume static ก่อน</p><p class="brtext">หา f ที่ต้องการ · ถ้า f ≤ μ_s N → static OK</p></div>
+<div class="br warn"><p class="brlabel">ถ้า f > μ_s N</p><p class="brtext">slip! → ใช้ f = μ_k N แทน · เปลี่ยน equation</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">4</div><div class="fbody">
+<p class="ftitle">Constraint equations</p>
+<p class="fdesc">วัตถุที่ต่อกัน: ความสัมพันธ์ระหว่าง a ของแต่ละวัตถุ · Atwood: a₁ = −a₂ · Pulley: ลด string length</p>
+<div class="branches">
+<div class="br note"><p class="brlabel">นับ eq vs unknown</p><p class="brtext">ต้องมี equations = unknowns · N equations จาก N วัตถุ + constraint</p></div>
+</div></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Key Equations</p>
+<details open><summary>Newton's Laws</summary><div class="d-body"><div class="eq-grid">
+<div class="eq"><p class="eq-name">Newton 2nd</p><p class="eq-f">ΣF = ma</p></div>
+<div class="eq"><p class="eq-name">Normal force (on slope)</p><p class="eq-f">N = mg cosθ + ma_⊥</p><p class="eq-note">ถ้า a มี component ตั้งฉากกับผิว</p></div>
+<div class="eq"><p class="eq-name">Friction</p><p class="eq-f">f_s ≤ μ_s N · f_k = μ_k N</p></div>
+<div class="eq"><p class="eq-name">Circular motion</p><p class="eq-f">ΣF_radial = mv²/r</p></div>
+<div class="eq"><p class="eq-name">Drag (low speed)</p><p class="eq-f">f_drag = bv</p><p class="eq-note">terminal: mg = bv_t</p></div>
+</div></div></details>
+</div>
+<div class="section"><p class="sec-label">Common Pitfalls</p>
+<div class="pitfalls">
+<div class="pit"><span class="pit-ico">⚠️</span><div><p class="pit-title">N ≠ mg เสมอ</p><p class="pit-desc">ถ้าวัตถุ accelerating หรืออยู่บนโค้ง N จะ ≠ mg ต้องเขียน FBD และ Newton 2nd ก่อนแทนค่า</p></div></div>
+<div class="pit"><span class="pit-ico">⚠️</span><div><p class="pit-title">Reaction force ≠ แรงที่ act บนวัตถุเดิม</p><p class="pit-desc">Newton 3rd: แรงคู่ action-reaction act บนวัตถุคนละตัว ห้ามใส่ทั้งคู่ใน FBD เดียวกัน</p></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Sanity Checks</p>
+<div class="checks">
+<div class="chk"><p class="chk-name">N ≥ 0</p><p class="chk-desc">ถ้า N < 0 → วัตถุลอยแล้ว เปลี่ยน model</p></div>
+<div class="chk"><p class="chk-name">a = 0 limit</p><p class="chk-desc">ถ้า a = 0 ต้องได้ static equilibrium</p></div>
+<div class="chk"><p class="chk-name">Direction</p><p class="chk-desc">แรงสุทธิชี้ทิศเดียวกับ a</p></div>
+</div></div>
+</div>
+<div class="page-footer">
+<button class="foot-btn" onclick="go('01')">← 01 Kinematics</button>
+<button class="foot-btn foot-home" onclick="goIndex()">⚛ หน้าแรก</button>
+<button class="foot-btn" onclick="go('03')">03 Energy →</button>
+</div></div>
+
+<!-- ════════════════════════════════════ 03 ENERGY ════════════════════════════════════ -->
+<div id="p-03" class="page">
+<div class="hero"><p class="topic-tag">03 · Mechanics</p>
+<h1 class="topic-title">Energy<br><span style="font-size:.55em;color:var(--muted);font-weight:400">พลังงาน · งาน · กำลัง</span></h1>
+<p class="topic-sub">จำแนก conservative vs non-conservative ก่อน · เลือก Newton หรือ Work-Energy ตาม type ของปัญหา</p></div>
+<div class="wrap">
+<div class="section"><p class="sec-label">Decision Workflow</p>
+<div class="flow">
+<div class="fstep"><div class="fnum">1</div><div class="fbody">
+<p class="ftitle">จำแนกแรงในระบบ</p>
+<p class="fdesc">แยก conservative (gravity, spring, electric) กับ non-conservative (friction, air resistance) เพราะสมการที่ใช้ต่างกัน</p>
+<div class="branches">
+<div class="br if"><p class="brlabel">Conservative only</p><p class="brtext">ΔKE + ΔPE = 0 · conservation of mechanical energy</p></div>
+<div class="br if"><p class="brlabel">มี non-conservative</p><p class="brtext">W_nc = ΔKE + ΔPE · W_nc = energy lost to friction, etc.</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">2</div><div class="fbody">
+<p class="ftitle">เลือก Newton vs Work-Energy</p>
+<p class="fdesc">Newton ดีเมื่อต้องการรู้ a และ force ทุก instant · Work-Energy ดีเมื่อถามถึง velocity ที่ final state โดยไม่ต้องรู้ระหว่างทาง</p>
+<div class="branches">
+<div class="br then"><p class="brlabel">Work-Energy theorem</p><p class="brtext">W_total = ΔKE = ½mv_f² − ½mv_i² · ใช้เมื่อ path ซับซ้อนแต่รู้ initial/final state</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">3</div><div class="fbody">
+<p class="ftitle">เลือก reference point ของ PE</p>
+<p class="fdesc">PE เปลี่ยนตาม reference ที่เลือก แต่ ΔPE ไม่เปลี่ยน · เลือก reference ที่ทำให้คำนวณง่ายที่สุด</p>
+<div class="branches">
+<div class="br note"><p class="brlabel">Gravity</p><p class="brtext">PE = mgh · h วัดจาก reference point ที่เลือก (ไม่จำเป็นต้องเป็นพื้น)</p></div>
+<div class="br note"><p class="brlabel">Spring</p><p class="brtext">PE = ½kx² · x จาก natural length ไม่ใช่จากพื้น!</p></div>
+</div></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Key Equations</p>
+<details open><summary>Work, Energy & Power</summary><div class="d-body"><div class="eq-grid">
+<div class="eq"><p class="eq-name">Work</p><p class="eq-f">W = F·d·cosθ = F⃗·d⃗</p></div>
+<div class="eq"><p class="eq-name">Work-Energy theorem</p><p class="eq-f">W_net = ΔKE = ½mv_f² − ½mv_i²</p></div>
+<div class="eq"><p class="eq-name">Conservation of energy</p><p class="eq-f">KE_i + PE_i = KE_f + PE_f</p><p class="eq-note">conservative forces only</p></div>
+<div class="eq"><p class="eq-name">Spring PE</p><p class="eq-f">PE_spring = ½kx²</p><p class="eq-note">x จาก natural length</p></div>
+<div class="eq"><p class="eq-name">Power</p><p class="eq-f">P = dW/dt = F⃗·v⃗</p></div>
+<div class="eq"><p class="eq-name">Non-conservative work</p><p class="eq-f">W_nc = ΔKE + ΔPE = ΔE_total</p></div>
+</div></div></details>
+</div>
+<div class="section"><p class="sec-label">Common Pitfalls</p>
+<div class="pitfalls">
+<div class="pit"><span class="pit-ico">⚠️</span><div><p class="pit-title">Spring PE: x จาก natural length ไม่ใช่จากพื้น</p><p class="pit-desc">ใน Atwood with spring ให้วาด diagram ระบุ natural length ก่อน แล้วหา x = extension จาก natural length เท่านั้น</p></div></div>
+<div class="pit"><span class="pit-ico">⚠️</span><div><p class="pit-title">W ของ normal force = 0</p><p class="pit-desc">N ⊥ displacement เสมอ → W_N = 0 · ไม่มีผลต่อ energy balance</p></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Sanity Checks</p>
+<div class="checks">
+<div class="chk"><p class="chk-name">KE ≥ 0</p><p class="chk-desc">kinetic energy เป็นลบไม่ได้</p></div>
+<div class="chk"><p class="chk-name">Energy conserved</p><p class="chk-desc">ถ้าไม่มี friction: KE+PE คงที่</p></div>
+<div class="chk"><p class="chk-name">W_friction < 0</p><p class="chk-desc">friction ลด mechanical energy เสมอ</p></div>
+</div></div>
+</div>
+<div class="page-footer">
+<button class="foot-btn" onclick="go('02')">← 02 Dynamics</button>
+<button class="foot-btn foot-home" onclick="goIndex()">⚛ หน้าแรก</button>
+<button class="foot-btn" onclick="go('04')">04 Momentum →</button>
+</div></div>
+
+<!-- ════════════════════════════════════ 04 MOMENTUM ════════════════════════════════════ -->
+<div id="p-04" class="page">
+<div class="hero"><p class="topic-tag">04 · Mechanics</p>
+<h1 class="topic-title">Momentum &amp; Collisions<br><span style="font-size:.55em;color:var(--muted);font-weight:400">โมเมนตัมและการชน</span></h1>
+<p class="topic-sub">เช็ก F_ext = 0 ก่อน · จำแนก elastic/inelastic · CoM frame ทำ elastic collision ง่ายขึ้นมาก</p></div>
+<div class="wrap">
+<div class="section"><p class="sec-label">Decision Workflow</p>
+<div class="flow">
+<div class="fstep"><div class="fnum">1</div><div class="fbody">
+<p class="ftitle">F_ext = 0 ไหม? (ใช้ momentum conservation)</p>
+<p class="fdesc">collision ช่วงสั้นๆ → แรงภายนอกเล็กมากเทียบกับ impulsive force → momentum conserved ได้</p>
+<div class="branches">
+<div class="br if"><p class="brlabel">F_ext ≈ 0</p><p class="brtext">p_total conserved · Σp_i = Σp_f · ใช้ทุก direction</p></div>
+<div class="br warn"><p class="brlabel">F_ext ≠ 0</p><p class="brtext">ใช้ impulse: Δp = ∫F dt = FΔt (average)</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">2</div><div class="fbody">
+<p class="ftitle">จำแนก collision type</p>
+<div class="branches">
+<div class="br if"><p class="brlabel">Elastic</p><p class="brtext">KE conserved ด้วย · 2 equations: p และ KE</p></div>
+<div class="br if"><p class="brlabel">Perfectly inelastic</p><p class="brtext">ติดกัน v_f เดียว · ใช้ p อย่างเดียว</p></div>
+<div class="br if"><p class="brlabel">Partial inelastic</p><p class="brtext">ต้องมีข้อมูลเพิ่ม: coefficient of restitution e = v_rel_f/v_rel_i</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">3</div><div class="fbody">
+<p class="ftitle">CoM Frame — shortcut สำหรับ elastic collision</p>
+<p class="fdesc">ใน CoM frame: p_total = 0 ดังนั้น หลัง elastic collision ทุกวัตถุแค่กลับทิศ velocity แล้ว transform กลับ lab frame</p>
+<div class="branches">
+<div class="br note"><p class="brlabel">v_cm</p><p class="brtext">v_cm = Σ(m_i·v_i)/Σm_i · v'_i = v_i − v_cm</p></div>
+</div></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Key Equations</p>
+<details open><summary>Momentum & Collisions</summary><div class="d-body"><div class="eq-grid">
+<div class="eq"><p class="eq-name">Momentum</p><p class="eq-f">p⃗ = mv⃗ · ΣF = dp/dt</p></div>
+<div class="eq"><p class="eq-name">Impulse</p><p class="eq-f">J⃗ = Δp⃗ = ∫F⃗ dt = F_avg·Δt</p></div>
+<div class="eq"><p class="eq-name">Conservation</p><p class="eq-f">Σp⃗_i = Σp⃗_f</p></div>
+<div class="eq"><p class="eq-name">Elastic 1D (สูตรสำเร็จ)</p><p class="eq-f">v₁' = (m₁−m₂)v₁/(m₁+m₂) + 2m₂v₂/(m₁+m₂)</p></div>
+<div class="eq"><p class="eq-name">Coeff. of restitution</p><p class="eq-f">e = |v_rel_f|/|v_rel_i|</p><p class="eq-note">e=1: elastic · e=0: perfectly inelastic</p></div>
+<div class="eq"><p class="eq-name">Center of mass</p><p class="eq-f">x_cm = Σm_i·x_i/Σm_i</p></div>
+</div></div></details>
+</div>
+<div class="section"><p class="sec-label">Common Pitfalls</p>
+<div class="pitfalls">
+<div class="pit"><span class="pit-ico">⚠️</span><div><p class="pit-title">Momentum เป็น vector</p><p class="pit-desc">conservation ใช้ทุก component แยกกัน · ใน 2D ต้องมี 2 equations (x, y) · อย่า conserve magnitude เฉยๆ</p></div></div>
+<div class="pit"><span class="pit-ico">⚠️</span><div><p class="pit-title">Elastic ≠ ไม่มีแรงกระทำ</p><p class="pit-desc">Elastic หมายความว่า KE conserved ไม่ใช่ว่าไม่มีแรง · perfectly elastic collision มีแรงมากมายระหว่างชน</p></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Sanity Checks</p>
+<div class="checks">
+<div class="chk"><p class="chk-name">p_total conserved</p><p class="chk-desc">ตรวจทุก component</p></div>
+<div class="chk"><p class="chk-name">KE_f ≤ KE_i</p><p class="chk-desc">KE ลดหรือคงที่ ไม่มีทาง> KE_i</p></div>
+<div class="chk"><p class="chk-name">e ∈ [0,1]</p><p class="chk-desc">coefficient of restitution</p></div>
+</div></div>
+</div>
+<div class="page-footer">
+<button class="foot-btn" onclick="go('03')">← 03 Energy</button>
+<button class="foot-btn foot-home" onclick="goIndex()">⚛ หน้าแรก</button>
+<button class="foot-btn" onclick="go('05')">05 Rotation →</button>
+</div></div>
+
+<!-- ════════════════════════════════════ 05 ROTATION ════════════════════════════════════ -->
+<div id="p-05" class="page">
+<div class="hero"><p class="topic-tag">05 · Mechanics</p>
+<h1 class="topic-title">Rotational Mechanics<br><span style="font-size:.55em;color:var(--muted);font-weight:400">กลศาสตร์การหมุน</span></h1>
+<p class="topic-sub">ทุกอย่างใน translation มี rotation analog · mapping: m↔I, F↔τ, p↔L · เลือก axis ที่ทำให้ τ จากแรงไม่รู้ = 0</p></div>
+<div class="wrap">
+<div class="section"><p class="sec-label">Decision Workflow</p>
+<div class="flow">
+<div class="fstep"><div class="fnum">1</div><div class="fbody">
+<p class="ftitle">หา Moment of Inertia I</p>
+<p class="fdesc">จำ I ของ shapes พื้นฐาน · ใช้ Parallel Axis Theorem เมื่อ axis ไม่ผ่าน CoM</p>
+<div class="branches">
+<div class="br note"><p class="brlabel">Solid sphere</p><p class="brtext">I = (2/5)MR²</p></div>
+<div class="br note"><p class="brlabel">Disk / solid cyl.</p><p class="brtext">I = (1/2)MR²</p></div>
+<div class="br note"><p class="brlabel">Hollow sphere</p><p class="brtext">I = (2/3)MR²</p></div>
+<div class="br note"><p class="brlabel">Rod (center)</p><p class="brtext">I = (1/12)ML² · end: (1/3)ML²</p></div>
+<div class="br alt"><p class="brlabel">Parallel Axis</p><p class="brtext">I = I_cm + Md²</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">2</div><div class="fbody">
+<p class="ftitle">เลือก axis สำหรับ torque equation</p>
+<p class="fdesc">เลือก pivot ที่ทำให้ torque จากแรงไม่รู้ = 0 ลด unknowns ได้ทันที</p>
+<div class="branches">
+<div class="br then"><p class="brlabel">τ = Iα</p><p class="brtext">ΣF = ma และ Στ = Iα ต้องเขียนพร้อมกัน</p></div>
+<div class="br note"><p class="brlabel">Torque</p><p class="brtext">τ = r×F = rF sinθ = r_⊥F = rF_⊥ · เลือกรูปแบบที่ง่ายที่สุด</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">3</div><div class="fbody">
+<p class="ftitle">Rolling without slipping</p>
+<p class="fdesc">Constraint: v_cm = ωR · a_cm = αR · มักเขียน 2 equations พร้อมกัน (translational + rotational)</p>
+<div class="branches">
+<div class="br warn"><p class="brlabel">ตรวจ constraint</p><p class="brtext">ถ้า μ ≥ threshold → rolling · ถ้า < threshold → slipping → ใช้ f = μ_k N</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">4</div><div class="fbody">
+<p class="ftitle">Angular Momentum Conservation</p>
+<p class="fdesc">ใช้เมื่อ Στ_ext = 0 · ระวัง L เป็น vector ทิศด้วยก็ conserved</p>
+<div class="branches">
+<div class="br note"><p class="brlabel">L = Iω</p><p class="brtext">I₁ω₁ = I₂ω₂ · spinning ice skater, collapsing star</p></div>
+</div></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Key Equations</p>
+<details open><summary>Rotational Dynamics & Energy</summary><div class="d-body"><div class="eq-grid">
+<div class="eq"><p class="eq-name">Newton 2nd (rotation)</p><p class="eq-f">Στ = Iα</p></div>
+<div class="eq"><p class="eq-name">Angular momentum</p><p class="eq-f">L = Iω · τ = dL/dt</p></div>
+<div class="eq"><p class="eq-name">Rolling KE</p><p class="eq-f">KE = ½mv² + ½Iω² = ½mv²(1 + I/mr²)</p></div>
+<div class="eq"><p class="eq-name">Parallel Axis</p><p class="eq-f">I = I_cm + Md²</p></div>
+<div class="eq"><p class="eq-name">Rolling constraint</p><p class="eq-f">v_cm = ωR · a_cm = αR</p></div>
+</div></div></details>
+</div>
+<div class="section"><p class="sec-label">Common Pitfalls</p>
+<div class="pitfalls">
+<div class="pit"><span class="pit-ico">⚠️</span><div><p class="pit-title">ลืม I_cm ใช้ Parallel Axis ผิด</p><p class="pit-desc">Parallel Axis ใช้ I_cm ก่อนเสมอ ไม่ใช่ I ของ axis อื่น · I = I_cm + Md² ต้อง d คือระยะจาก cm</p></div></div>
+<div class="pit"><span class="pit-ico">⚠️</span><div><p class="pit-title">เลือก axis ผิดทำให้ τ ซับซ้อน</p><p class="pit-desc">เลือก pivot ที่ทำให้ unknown forces ผ่าน → τ = 0 จะได้สมการที่ไม่มี unknown นั้น</p></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Sanity Checks</p>
+<div class="checks">
+<div class="chk"><p class="chk-name">v = ωR</p><p class="chk-desc">rolling: ตรวจ constraint</p></div>
+<div class="chk"><p class="chk-name">I ≥ 0</p><p class="chk-desc">moment of inertia เป็น positive</p></div>
+<div class="chk"><p class="chk-name">Units</p><p class="chk-desc">τ [N·m] · L [kg·m²/s]</p></div>
+</div></div>
+</div>
+<div class="page-footer">
+<button class="foot-btn" onclick="go('04')">← 04 Momentum</button>
+<button class="foot-btn foot-home" onclick="goIndex()">⚛ หน้าแรก</button>
+<button class="foot-btn" onclick="go('06')">06 SHM →</button>
+</div></div>
+
+<!-- ════════════════════════════════════ 06 SHM ════════════════════════════════════ -->
+<div id="p-06" class="page">
+<div class="hero"><p class="topic-tag">06 · Mechanics</p>
+<h1 class="topic-title">Simple Harmonic Motion<br><span style="font-size:.55em;color:var(--muted);font-weight:400">การสั่นแบบฮาร์มอนิกอย่างง่าย</span></h1>
+<p class="topic-sub">สัญญาณ SHM: F = −kx รูปแบบนี้อาจซ่อนอยู่ · หา equilibrium ก่อน แล้ว expand รอบนั้น</p></div>
+<div class="wrap">
+<div class="section"><p class="sec-label">Decision Workflow</p>
+<div class="flow">
+<div class="fstep"><div class="fnum">1</div><div class="fbody">
+<p class="ftitle">หา equilibrium position</p>
+<p class="fdesc">Set F_net = 0 หรือ V'(x) = 0 · equilibrium คือจุดที่ระบบ "ต้องการ" อยู่</p>
+</div></div>
+<div class="fstep"><div class="fnum">2</div><div class="fbody">
+<p class="ftitle">Set ξ = x − x_eq และ Taylor expand</p>
+<p class="fdesc">เก็บแค่ first-order term · ถ้าได้ ξ̈ = −ω²ξ → SHM confirmed · ω² = coefficient</p>
+<div class="branches">
+<div class="br then"><p class="brlabel">ได้ F = −kξ</p><p class="brtext">SHM · ω = √(k/m) · T = 2π√(m/k)</p></div>
+<div class="br warn"><p class="brlabel">ไม่ได้รูปแบบ F = −kξ</p><p class="brtext">ไม่ใช่ SHM · ต้องใช้วิธีอื่น</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">3</div><div class="fbody">
+<p class="ftitle">หา ω, A, φ จาก Initial Conditions</p>
+<p class="fdesc">x(t) = A cos(ωt + φ) · x(0) = x₀ · v(0) = v₀ · A = √(x₀² + v₀²/ω²)</p>
+<div class="branches">
+<div class="br note"><p class="brlabel">Energy approach</p><p class="brtext">E = ½kA² = ½mv² + ½kx² · หา A จาก energy conservation</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">4</div><div class="fbody">
+<p class="ftitle">Damping regime (ถ้ามี)</p>
+<div class="branches">
+<div class="br if"><p class="brlabel">Underdamped b² < 4mk</p><p class="brtext">oscillates · ω_d = √(ω₀² − γ²) · amplitude ลดลง</p></div>
+<div class="br if"><p class="brlabel">Critically damped b² = 4mk</p><p class="brtext">return to eq เร็วที่สุดโดยไม่ oscillate</p></div>
+<div class="br if"><p class="brlabel">Overdamped b² > 4mk</p><p class="brtext">return ช้า ไม่ oscillate</p></div>
+</div></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Key Equations</p>
+<details open><summary>SHM Core</summary><div class="d-body"><div class="eq-grid">
+<div class="eq"><p class="eq-name">General solution</p><p class="eq-f">x(t) = A cos(ωt + φ)</p></div>
+<div class="eq"><p class="eq-name">Angular frequency</p><p class="eq-f">ω = √(k/m) · T = 2π/ω = 2π√(m/k)</p></div>
+<div class="eq"><p class="eq-name">Pendulum (small θ)</p><p class="eq-f">ω = √(g/L) · T = 2π√(L/g)</p></div>
+<div class="eq"><p class="eq-name">Energy</p><p class="eq-f">E = ½kA² = ½mv² + ½kx²</p></div>
+<div class="eq"><p class="eq-name">Max velocity</p><p class="eq-f">v_max = Aω (at x = 0)</p></div>
+<div class="eq"><p class="eq-name">Max acceleration</p><p class="eq-f">a_max = Aω² (at x = ±A)</p></div>
+</div></div></details>
+</div>
+<div class="section"><p class="sec-label">Common Pitfalls</p>
+<div class="pitfalls">
+<div class="pit"><span class="pit-ico">⚠️</span><div><p class="pit-title">Pendulum: θ ต้องน้อย (< ~15°) สำหรับ SHM</p><p class="pit-desc">sin θ ≈ θ ใช้ได้เมื่อ θ ในหน่วย radian และมีค่าน้อย · θ ใหญ่ต้องใช้ elliptic integral หรือ numerical</p></div></div>
+<div class="pit"><span class="pit-ico">⚠️</span><div><p class="pit-title">A ≠ x_initial เสมอ</p><p class="pit-desc">A ขึ้นกับทั้ง x₀ และ v₀ · A = √(x₀² + (v₀/ω)²) · ถ้าปล่อยจากหยุด: A = x₀</p></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Sanity Checks</p>
+<div class="checks">
+<div class="chk"><p class="chk-name">ω² > 0</p><p class="chk-desc">ถ้า ω² < 0 → ไม่ใช่ stable equilibrium</p></div>
+<div class="chk"><p class="chk-name">E คงที่</p><p class="chk-desc">no damping: E = ½kA² = constant</p></div>
+<div class="chk"><p class="chk-name">T ∝ √(m/k)</p><p class="chk-desc">มวลมาก → oscillate ช้า</p></div>
+</div></div>
+</div>
+<div class="page-footer">
+<button class="foot-btn" onclick="go('05')">← 05 Rotation</button>
+<button class="foot-btn foot-home" onclick="goIndex()">⚛ หน้าแรก</button>
+<button class="foot-btn" onclick="go('07')">07 Gravity →</button>
+</div></div>
+
+<!-- ════════════════════════════════════ 07 GRAVITY ════════════════════════════════════ -->
+<div id="p-07" class="page">
+<div class="hero"><p class="topic-tag">07 · Mechanics</p>
+<h1 class="topic-title">Gravitation<br><span style="font-size:.55em;color:var(--muted);font-weight:400">ความโน้มถ่วง · วงโคจร</span></h1>
+<p class="topic-sub">Shell theorem + Gauss → ลด complexity · orbital mechanics ใช้ energy + angular momentum conservation</p></div>
+<div class="wrap">
+<div class="section"><p class="sec-label">Decision Workflow</p>
+<div class="flow">
+<div class="fstep"><div class="fnum">1</div><div class="fbody">
+<p class="ftitle">มี Symmetry → Gauss's Law for Gravity</p>
+<p class="fdesc">∮ g⃗·dA⃗ = −4πGM_enc · เลือก Gaussian surface ทรงกลม</p>
+<div class="branches">
+<div class="br then"><p class="brlabel">r > R (outside)</p><p class="brtext">g = GM/r² · เหมือนมวลรวมอยู่ที่ center</p></div>
+<div class="br then"><p class="brlabel">r < R (inside uniform)</p><p class="brtext">g = GMr/R³ · เพิ่มขึ้นเชิงเส้นจาก center</p></div>
+<div class="br note"><p class="brlabel">Shell theorem</p><p class="brtext">Spherical shell → g = 0 ภายใน shell อย่างสมบูรณ์</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">2</div><div class="fbody">
+<p class="ftitle">Orbital Mechanics</p>
+<p class="fdesc">ใช้ conservation of energy และ angular momentum พร้อมกัน</p>
+<div class="branches">
+<div class="br then"><p class="brlabel">Circular orbit</p><p class="brtext">mv²/r = GMm/r² → v = √(GM/r) · T² ∝ r³ (Kepler 3rd)</p></div>
+<div class="br then"><p class="brlabel">Elliptical orbit</p><p class="brtext">E = −GMm/2a · a = semi-major axis · L conserved ตลอด orbit</p></div>
+<div class="br warn"><p class="brlabel">Escape velocity</p><p class="brtext">E_total = 0 → v_esc = √(2GM/r)</p></div>
+</div></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Key Equations</p>
+<details open><summary>Gravity & Orbits</summary><div class="d-body"><div class="eq-grid">
+<div class="eq"><p class="eq-name">Newton's Gravity</p><p class="eq-f">F = GMm/r²</p></div>
+<div class="eq"><p class="eq-name">Gravitational PE</p><p class="eq-f">U = −GMm/r</p></div>
+<div class="eq"><p class="eq-name">Orbital velocity</p><p class="eq-f">v = √(GM/r)</p></div>
+<div class="eq"><p class="eq-name">Kepler 3rd Law</p><p class="eq-f">T² = (4π²/GM)r³</p></div>
+<div class="eq"><p class="eq-name">Escape velocity</p><p class="eq-f">v_esc = √(2GM/r)</p></div>
+<div class="eq"><p class="eq-name">Total orbital energy</p><p class="eq-f">E = −GMm/(2a)</p><p class="eq-note">a = semi-major axis</p></div>
+</div></div></details>
+</div>
+<div class="section"><p class="sec-label">Common Pitfalls</p>
+<div class="pitfalls">
+<div class="pit"><span class="pit-ico">⚠️</span><div><p class="pit-title">PE = −GMm/r (ติดลบ)</p><p class="pit-desc">reference PE = 0 ที่ r = ∞ ดังนั้น PE < 0 เสมอ · bound orbit มี E = KE + PE < 0</p></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Sanity Checks</p>
+<div class="checks">
+<div class="chk"><p class="chk-name">E < 0</p><p class="chk-desc">bound orbit: total energy ติดลบ</p></div>
+<div class="chk"><p class="chk-name">T² ∝ r³</p><p class="chk-desc">Kepler 3rd: ตรวจ orbital period</p></div>
+<div class="chk"><p class="chk-name">v_esc = √2 · v_orbit</p><p class="chk-desc">สำหรับ circular orbit</p></div>
+</div></div>
+</div>
+<div class="page-footer">
+<button class="foot-btn" onclick="go('06')">← 06 SHM</button>
+<button class="foot-btn foot-home" onclick="goIndex()">⚛ หน้าแรก</button>
+<button class="foot-btn" onclick="go('08')">08 Fluids →</button>
+</div></div>
+
+<!-- ════════════════════════════════════ 08 FLUIDS ════════════════════════════════════ -->
+<div id="p-08" class="page">
+<div class="hero"><p class="topic-tag">08 · Fluids</p>
+<h1 class="topic-title">Fluid Mechanics<br><span style="font-size:.55em;color:var(--muted);font-weight:400">กลศาสตร์ของไหล</span></h1>
+<p class="topic-sub">Static หรือ Dynamic? Ideal หรือ Viscous? คำตอบกำหนด equations ทั้งหมด · Bernoulli ใช้ได้ along streamline เท่านั้น</p></div>
+<div class="wrap">
+<div class="section"><p class="sec-label">Decision Workflow</p>
+<div class="flow">
+<div class="fstep"><div class="fnum">1</div><div class="fbody">
+<p class="ftitle">ระบุ Flow Regime</p>
+<div class="branches">
+<div class="br if"><p class="brlabel">Fluid static</p><p class="brtext">ใช้ P = P₀ + ρgh · buoyancy = ρ_fluid·V_sub·g</p></div>
+<div class="br if"><p class="brlabel">Fluid dynamic, ideal</p><p class="brtext">Bernoulli + Continuity · P + ½ρv² + ρgh = const</p></div>
+<div class="br if"><p class="brlabel">Viscous</p><p class="brtext">Poiseuille flow: Q = πr⁴ΔP/(8ηL)</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">2</div><div class="fbody">
+<p class="ftitle">Bernoulli — ระวัง conditions</p>
+<p class="fdesc">ใช้ได้เฉพาะ: ideal fluid (incompressible, inviscid) · along a streamline · steady flow</p>
+<div class="branches">
+<div class="br warn"><p class="brlabel">ใช้คู่กับ Continuity</p><p class="brtext">A₁v₁ = A₂v₂ · ลด unknowns ก่อน Bernoulli</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">3</div><div class="fbody">
+<p class="ftitle">Force บน fluid/container</p>
+<p class="fdesc">ใช้ momentum theorem: F = ṁ(v_out − v_in) · ṁ = ρAv</p>
+</div></div>
+</div></div>
+<div class="section"><p class="sec-label">Key Equations</p>
+<details open><summary>Fluid Statics & Dynamics</summary><div class="d-body"><div class="eq-grid">
+<div class="eq"><p class="eq-name">Pressure in fluid</p><p class="eq-f">P = P₀ + ρgh</p></div>
+<div class="eq"><p class="eq-name">Archimedes (buoyancy)</p><p class="eq-f">F_b = ρ_fluid·V_sub·g</p></div>
+<div class="eq"><p class="eq-name">Continuity</p><p class="eq-f">A₁v₁ = A₂v₂ = Q = const</p></div>
+<div class="eq"><p class="eq-name">Bernoulli</p><p class="eq-f">P + ½ρv² + ρgh = const</p></div>
+<div class="eq"><p class="eq-name">Torricelli</p><p class="eq-f">v = √(2gh)</p><p class="eq-note">ไหลจากรูที่ depth h</p></div>
+<div class="eq"><p class="eq-name">Surface tension</p><p class="eq-f">ΔP = 2γ/r (drop) · 4γ/r (bubble)</p></div>
+</div></div></details>
+</div>
+<div class="section"><p class="sec-label">Common Pitfalls</p>
+<div class="pitfalls">
+<div class="pit"><span class="pit-ico">⚠️</span><div><p class="pit-title">Bernoulli ใช้ได้เฉพาะ ideal + along streamline</p><p class="pit-desc">ห้ามใช้ข้าม streamlines · ถ้า fluid มี viscosity หรือ turbulent ไม่ได้ใช้ Bernoulli</p></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Sanity Checks</p>
+<div class="checks">
+<div class="chk"><p class="chk-name">v เพิ่ม → P ลด</p><p class="chk-desc">Bernoulli: constriction → faster → lower P</p></div>
+<div class="chk"><p class="chk-name">Av = const</p><p class="chk-desc">continuity ทุก cross-section</p></div>
+<div class="chk"><p class="chk-name">F_b = ρVg</p><p class="chk-desc">ขึ้นกับ fluid density ไม่ใช่ object density</p></div>
+</div></div>
+</div>
+<div class="page-footer">
+<button class="foot-btn" onclick="go('07')">← 07 Gravity</button>
+<button class="foot-btn foot-home" onclick="goIndex()">⚛ หน้าแรก</button>
+<button class="foot-btn" onclick="go('09')">09 Thermo →</button>
+</div></div>
+
+<!-- ════════════════════════════════════ 09 THERMO ════════════════════════════════════ -->
+<div id="p-09" class="page">
+<div class="hero"><p class="topic-tag">09 · Thermodynamics</p>
+<h1 class="topic-title">Thermodynamics<br><span style="font-size:.55em;color:var(--muted);font-weight:400">อุณหพลศาสตร์</span></h1>
+<p class="topic-sub">วาด PV diagram ก่อนเสมอ · area ใต้เส้น = W · ΔU = nCᵥΔT เสมอ ไม่ว่า process จะเป็นอะไร</p></div>
+<div class="wrap">
+<div class="section"><p class="sec-label">Decision Workflow</p>
+<div class="flow">
+<div class="fstep"><div class="fnum">1</div><div class="fbody">
+<p class="ftitle">วาด PV diagram และระบุ process</p>
+<div class="branches">
+<div class="br if"><p class="brlabel">Isothermal T คงที่</p><p class="brtext">PV = const · เส้น hyperbola · W = nRT ln(V_f/V_i)</p></div>
+<div class="br if"><p class="brlabel">Isobaric P คงที่</p><p class="brtext">เส้นตรงแนวนอน · W = PΔV</p></div>
+<div class="br if"><p class="brlabel">Isochoric V คงที่</p><p class="brtext">เส้นตรงแนวตั้ง · W = 0</p></div>
+<div class="br if"><p class="brlabel">Adiabatic Q = 0</p><p class="brtext">PVᵞ = const · ชันกว่า isothermal เสมอ</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">2</div><div class="fbody">
+<p class="ftitle">First Law: ΔU = Q − W</p>
+<p class="fdesc">สำหรับ ideal gas: ΔU = nCᵥΔT เสมอ ไม่ว่า process จะเป็นแบบไหน · นี่คือ key insight ที่สำคัญมาก</p>
+<div class="branches">
+<div class="br note"><p class="brlabel">Sign convention</p><p class="brtext">Q > 0: heat เข้าระบบ · W > 0: gas ทำงาน (expand)</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">3</div><div class="fbody">
+<p class="ftitle">Heat Engine / Refrigerator</p>
+<div class="branches">
+<div class="br then"><p class="brlabel">Efficiency</p><p class="brtext">η = W/Q_H = 1 − Q_C/Q_H · Carnot max: η = 1 − T_C/T_H</p></div>
+<div class="br then"><p class="brlabel">COP refrigerator</p><p class="brtext">COP = Q_C/W · Carnot max: T_C/(T_H − T_C)</p></div>
+</div></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Key Equations</p>
+<details open><summary>Thermodynamic Laws</summary><div class="d-body"><div class="eq-grid">
+<div class="eq"><p class="eq-name">Ideal gas law</p><p class="eq-f">PV = nRT = NkT</p></div>
+<div class="eq"><p class="eq-name">First Law</p><p class="eq-f">ΔU = Q − W</p></div>
+<div class="eq"><p class="eq-name">Internal energy (ideal)</p><p class="eq-f">ΔU = nCᵥΔT</p><p class="eq-note">ทุก process · monatomic: Cᵥ = (3/2)R</p></div>
+<div class="eq"><p class="eq-name">Adiabatic</p><p class="eq-f">PVᵞ = const · TVᵞ⁻¹ = const</p><p class="eq-note">γ = Cₚ/Cᵥ</p></div>
+<div class="eq"><p class="eq-name">Entropy change</p><p class="eq-f">ΔS = ∫dQ_rev/T ≥ 0</p></div>
+<div class="eq"><p class="eq-name">Carnot efficiency</p><p class="eq-f">η_max = 1 − T_C/T_H</p></div>
+</div></div></details>
+</div>
+<div class="section"><p class="sec-label">Common Pitfalls</p>
+<div class="pitfalls">
+<div class="pit"><span class="pit-ico">⚠️</span><div><p class="pit-title">ΔU = nCᵥΔT ใช้ได้ทุก process (ideal gas)</p><p class="pit-desc">แม้แต่ isobaric ก็ใช้ Cᵥ ใน ΔU ได้ · Cₚ ใช้ใน Q = nCₚΔT สำหรับ isobaric process เท่านั้น</p></div></div>
+<div class="pit"><span class="pit-ico">⚠️</span><div><p class="pit-title">T ต้องเป็น Kelvin เสมอใน Carnot</p><p class="pit-desc">η = 1 − T_C/T_H ต้อง T ใน absolute scale (Kelvin) เท่านั้น</p></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Sanity Checks</p>
+<div class="checks">
+<div class="chk"><p class="chk-name">η ≤ η_Carnot</p><p class="chk-desc">ไม่มี engine ดีกว่า Carnot</p></div>
+<div class="chk"><p class="chk-name">ΔS_universe ≥ 0</p><p class="chk-desc">Second Law</p></div>
+<div class="chk"><p class="chk-name">W = area ใน PV</p><p class="chk-desc">ตรวจ sign: expand = +W</p></div>
+</div></div>
+</div>
+<div class="page-footer">
+<button class="foot-btn" onclick="go('08')">← 08 Fluids</button>
+<button class="foot-btn foot-home" onclick="goIndex()">⚛ หน้าแรก</button>
+<button class="foot-btn" onclick="go('10')">10 Waves →</button>
+</div></div>
+
+<!-- ════════════════════════════════════ 10 WAVES ════════════════════════════════════ -->
+<div id="p-10" class="page">
+<div class="hero"><p class="topic-tag">10 · Waves</p>
+<h1 class="topic-title">Waves &amp; Oscillations<br><span style="font-size:.55em;color:var(--muted);font-weight:400">คลื่นและการสั่น</span></h1>
+<p class="topic-sub">คลื่นถ่ายทอด energy ไม่มีการเคลื่อนที่สุทธิของตัวกลาง · Boundary conditions กำหนด standing wave frequencies</p></div>
+<div class="wrap">
+<div class="section"><p class="sec-label">Decision Workflow</p>
+<div class="flow">
+<div class="fstep"><div class="fnum">1</div><div class="fbody">
+<p class="ftitle">ระบุ k, ω, v ของคลื่น</p>
+<p class="fdesc">y = A sin(kx − ωt + φ): k = 2π/λ · ω = 2πf · v = ω/k = fλ</p>
+</div></div>
+<div class="fstep"><div class="fnum">2</div><div class="fbody">
+<p class="ftitle">Standing Waves — ระบุ Boundary Conditions</p>
+<div class="branches">
+<div class="br if"><p class="brlabel">Fixed end</p><p class="brtext">Node · displacement = 0</p></div>
+<div class="br if"><p class="brlabel">Free end</p><p class="brtext">Antinode · max displacement</p></div>
+<div class="br then"><p class="brlabel">Both fixed/free</p><p class="brtext">fₙ = nv/2L · all harmonics</p></div>
+<div class="br then"><p class="brlabel">One fixed, one free</p><p class="brtext">fₙ = (2n−1)v/4L · odd harmonics only</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">3</div><div class="fbody">
+<p class="ftitle">Interference — คำนวณ path difference</p>
+<div class="branches">
+<div class="br then"><p class="brlabel">Constructive</p><p class="brtext">Δ = nλ</p></div>
+<div class="br warn"><p class="brlabel">Destructive</p><p class="brtext">Δ = (n+½)λ</p></div>
+<div class="br note"><p class="brlabel">Phase shift at reflection</p><p class="brtext">จาก denser medium → phase shift π</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">4</div><div class="fbody">
+<p class="ftitle">Doppler Effect</p>
+<p class="fdesc">f_obs = f_s·(v ± v_obs)/(v ∓ v_s) · บวกบน: observer เข้าหา · ลบล่าง: source เข้าหา</p>
+<div class="branches">
+<div class="br note"><p class="brlabel">Verify</p><p class="brtext">ถ้าเข้าหากัน f_obs > f_s เสมอ</p></div>
+</div></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Key Equations</p>
+<details open><summary>Wave Equations</summary><div class="d-body"><div class="eq-grid">
+<div class="eq"><p class="eq-name">Wave speed</p><p class="eq-f">v = fλ = ω/k</p></div>
+<div class="eq"><p class="eq-name">String wave speed</p><p class="eq-f">v = √(T/μ)</p></div>
+<div class="eq"><p class="eq-name">String harmonics</p><p class="eq-f">fₙ = nv/2L · n = 1,2,3...</p></div>
+<div class="eq"><p class="eq-name">Open pipe harmonics</p><p class="eq-f">fₙ = nv/2L (both open)</p></div>
+<div class="eq"><p class="eq-name">Closed pipe</p><p class="eq-f">fₙ = (2n−1)v/4L (odd only)</p></div>
+<div class="eq"><p class="eq-name">Doppler</p><p class="eq-f">f = f_s(v±v_obs)/(v∓v_s)</p></div>
+<div class="eq"><p class="eq-name">Beats</p><p class="eq-f">f_beat = |f₁ − f₂|</p></div>
+<div class="eq"><p class="eq-name">Intensity</p><p class="eq-f">I ∝ A² · I = P/4πr²</p></div>
+</div></div></details>
+</div>
+<div class="section"><p class="sec-label">Common Pitfalls</p>
+<div class="pitfalls">
+<div class="pit"><span class="pit-ico">⚠️</span><div><p class="pit-title">Doppler sign สับสนง่าย</p><p class="pit-desc">ตรวจผล: ถ้าเข้าหากัน f_obs > f_s เสมอ · ถ้าออกจากกัน f_obs < f_s</p></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Sanity Checks</p>
+<div class="checks">
+<div class="chk"><p class="chk-name">v = fλ</p><p class="chk-desc">ตรวจ wave speed สอดคล้อง</p></div>
+<div class="chk"><p class="chk-name">Node ที่ fixed end</p><p class="chk-desc">Antinode ที่ free end</p></div>
+<div class="chk"><p class="chk-name">I ∝ A²</p><p class="chk-desc">intensity ∝ amplitude²</p></div>
+</div></div>
+</div>
+<div class="page-footer">
+<button class="foot-btn" onclick="go('09')">← 09 Thermo</button>
+<button class="foot-btn foot-home" onclick="goIndex()">⚛ หน้าแรก</button>
+<button class="foot-btn" onclick="go('11')">11 Optics →</button>
+</div></div>
+
+<!-- ════════════════════════════════════ 11 OPTICS ════════════════════════════════════ -->
+<div id="p-11" class="page">
+<div class="hero"><p class="topic-tag">11 · Optics</p>
+<h1 class="topic-title">Optics<br><span style="font-size:.55em;color:var(--muted);font-weight:400">ทัศนศาสตร์</span></h1>
+<p class="topic-sub">Geometric (ray) เมื่อ size ≫ λ · Wave (physical) เมื่อ size ≈ λ หรือถามถึง interference · วาด ray diagram ก่อนคำนวณเสมอ</p></div>
+<div class="wrap">
+<div class="section"><p class="sec-label">Decision Workflow</p>
+<div class="flow">
+<div class="fstep"><div class="fnum">1</div><div class="fbody">
+<p class="ftitle">Geometric หรือ Wave Optics?</p>
+<div class="branches">
+<div class="br if"><p class="brlabel">Geometric (Ray)</p><p class="brtext">lens, mirror, prism, TIR, image formation</p></div>
+<div class="br if"><p class="brlabel">Wave (Physical)</p><p class="brtext">thin film, double slit, grating, diffraction, polarization</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">2A</div><div class="fbody">
+<p class="ftitle">Geometric — วาด Ray Diagram + Lens/Mirror Equation</p>
+<div class="branches">
+<div class="br then"><p class="brlabel">1/f = 1/dₒ + 1/dᵢ</p><p class="brtext">real image dᵢ > 0 · virtual dᵢ < 0 · converging f > 0</p></div>
+<div class="br note"><p class="brlabel">Snell's Law</p><p class="brtext">n₁ sinθ₁ = n₂ sinθ₂ · θ จาก normal เสมอ!</p></div>
+<div class="br warn"><p class="brlabel">TIR</p><p class="brtext">ต้องมี n₁ > n₂ AND θ > θ_c = arcsin(n₂/n₁)</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">2B</div><div class="fbody">
+<p class="ftitle">Wave — นับ Phase Shifts ที่ Reflections</p>
+<p class="fdesc">reflection จาก medium ที่ n สูงกว่า → phase shift π · นับจำนวน shifts ที่เกิดทั้งหมด</p>
+<div class="branches">
+<div class="br then"><p class="brlabel">Shifts จำนวนคู่ (0,2)</p><p class="brtext">Constructive: 2nt = mλ · Destructive: 2nt = (m+½)λ</p></div>
+<div class="br then"><p class="brlabel">Shifts จำนวนคี่ (1)</p><p class="brtext">Constructive: 2nt = (m+½)λ · Destructive: 2nt = mλ</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">3</div><div class="fbody">
+<p class="ftitle">Double Slit / Grating / Single Slit</p>
+<div class="branches">
+<div class="br then"><p class="brlabel">Double slit maxima</p><p class="brtext">d sinθ = mλ · y_m = mλL/d</p></div>
+<div class="br then"><p class="brlabel">Grating maxima</p><p class="brtext">d sinθ = mλ · d = 1/N</p></div>
+<div class="br warn"><p class="brlabel">Single slit MINIMA</p><p class="brtext">a sinθ = mλ · m≠0 · (ไม่ใช่ maxima!)</p></div>
+</div></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Key Equations</p>
+<details open><summary>Geometric & Wave Optics</summary><div class="d-body"><div class="eq-grid">
+<div class="eq"><p class="eq-name">Lens/Mirror</p><p class="eq-f">1/f = 1/dₒ + 1/dᵢ</p></div>
+<div class="eq"><p class="eq-name">Magnification</p><p class="eq-f">m = −dᵢ/dₒ</p></div>
+<div class="eq"><p class="eq-name">Snell's Law</p><p class="eq-f">n₁ sinθ₁ = n₂ sinθ₂</p></div>
+<div class="eq"><p class="eq-name">Critical angle</p><p class="eq-f">θ_c = arcsin(n₂/n₁)</p></div>
+<div class="eq"><p class="eq-name">Double slit fringes</p><p class="eq-f">y_m = mλL/d</p></div>
+<div class="eq"><p class="eq-name">Rayleigh criterion</p><p class="eq-f">θ_min = 1.22λ/D</p></div>
+</div></div></details>
+</div>
+<div class="section"><p class="sec-label">Common Pitfalls</p>
+<div class="pitfalls">
+<div class="pit"><span class="pit-ico">⚠️</span><div><p class="pit-title">θ วัดจาก Normal ไม่ใช่ผิว</p><p class="pit-desc">Snell's law ใช้ θ จาก normal เสมอ ถ้าโจทย์ให้ θ จากผิว ต้องแปลงก่อน: θ_normal = 90° − θ_surface</p></div></div>
+<div class="pit"><span class="pit-ico">⚠️</span><div><p class="pit-title">Single slit: สูตรให้ minima ไม่ใช่ maxima</p><p class="pit-desc">a sinθ = mλ → dark fringes · ต่างจาก double slit ที่สูตรให้ bright fringes</p></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Sanity Checks</p>
+<div class="checks">
+<div class="chk"><p class="chk-name">m > 0: upright</p><p class="chk-desc">m < 0: inverted image</p></div>
+<div class="chk"><p class="chk-name">n₁ > n₂ for TIR</p><p class="chk-desc">จาก dense → less dense medium</p></div>
+<div class="chk"><p class="chk-name">นับ phase shifts</p><p class="chk-desc">คี่: condition สลับ · คู่: ปกติ</p></div>
+</div></div>
+</div>
+<div class="page-footer">
+<button class="foot-btn" onclick="go('10')">← 10 Waves</button>
+<button class="foot-btn foot-home" onclick="goIndex()">⚛ หน้าแรก</button>
+<button class="foot-btn" onclick="go('12')">12 Electrostatics →</button>
+</div></div>
+
+<!-- ════════════════════════════════════ 12 ELECTROSTATICS ════════════════════════════════════ -->
+<div id="p-12" class="page">
+<div class="hero"><p class="topic-tag">12 · Electromagnetism</p>
+<h1 class="topic-title">Electrostatics<br><span style="font-size:.55em;color:var(--muted);font-weight:400">ไฟฟ้าสถิต</span></h1>
+<p class="topic-sub">Symmetry → Gauss's law · ไม่มี symmetry → superpose V (scalar ง่ายกว่า E) แล้วหา E = −∇V</p></div>
+<div class="wrap">
+<div class="section"><p class="sec-label">Decision Workflow</p>
+<div class="flow">
+<div class="fstep"><div class="fnum">1</div><div class="fbody">
+<p class="ftitle">ระบุ Symmetry → เลือก Gaussian Surface</p>
+<div class="branches">
+<div class="br if"><p class="brlabel">Spherical</p><p class="brtext">Gaussian sphere · E radial · ∮E·dA = E·4πr²</p></div>
+<div class="br if"><p class="brlabel">Cylindrical</p><p class="brtext">Gaussian cylinder · E radial จาก axis · ∮E·dA = E·2πrL</p></div>
+<div class="br if"><p class="brlabel">Planar</p><p class="brtext">Pillbox · E ตั้งฉากกับ sheet · ∮E·dA = 2E·A</p></div>
+<div class="br warn"><p class="brlabel">ไม่มี symmetry</p><p class="brtext">superpose V = Σkqᵢ/rᵢ แล้ว E = −∇V</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">2</div><div class="fbody">
+<p class="ftitle">Gauss's Law: ∮ E·dA = Q_enc/ε₀</p>
+<div class="branches">
+<div class="br then"><p class="brlabel">r > R (outside)</p><p class="brtext">E เหมือนจุด charge ที่ center</p></div>
+<div class="br then"><p class="brlabel">r < R (inside uniform)</p><p class="brtext">Q_enc = ρ·(4/3)πr³ · E = ρr/(3ε₀)</p></div>
+<div class="br note"><p class="brlabel">Shell: E = 0 inside</p><p class="brtext">Q_enc = 0 ภายใน shell → E = 0</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">3</div><div class="fbody">
+<p class="ftitle">Conductor Boundary Conditions</p>
+<div class="branches">
+<div class="br warn"><p class="brlabel">ภายใน conductor</p><p class="brtext">E = 0 · V = const · ρ = 0</p></div>
+<div class="br warn"><p class="brlabel">ที่ผิว</p><p class="brtext">E ⊥ ผิวเสมอ · E = σ/ε₀ · charge บนผิวเท่านั้น</p></div>
+</div></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Key Equations</p>
+<details open><summary>Fields, Potential & Capacitance</summary><div class="d-body"><div class="eq-grid">
+<div class="eq"><p class="eq-name">Coulomb's Law</p><p class="eq-f">F = kq₁q₂/r²</p><p class="eq-note">k = 8.99×10⁹ N·m²/C²</p></div>
+<div class="eq"><p class="eq-name">Gauss's Law</p><p class="eq-f">∮ E·dA = Q_enc/ε₀</p></div>
+<div class="eq"><p class="eq-name">Potential (point charge)</p><p class="eq-f">V = kq/r</p></div>
+<div class="eq"><p class="eq-name">E from V</p><p class="eq-f">E = −∇V · E_x = −∂V/∂x</p></div>
+<div class="eq"><p class="eq-name">Parallel plate capacitor</p><p class="eq-f">C = ε₀A/d (κε₀A/d with dielectric)</p></div>
+<div class="eq"><p class="eq-name">Energy</p><p class="eq-f">U = Q²/2C = ½CV²</p></div>
+</div></div></details>
+</div>
+<div class="section"><p class="sec-label">Common Pitfalls</p>
+<div class="pitfalls">
+<div class="pit"><span class="pit-ico">⚠️</span><div><p class="pit-title">Superpose V ไม่ใช่ E โดยตรง</p><p class="pit-desc">E เป็น vector → ต้อง decompose ทุก component · V เป็น scalar → บวกตรงๆ · หา V รวมก่อน แล้ว differentiate หา E</p></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Sanity Checks</p>
+<div class="checks">
+<div class="chk"><p class="chk-name">E = 0 ใน conductor</p><p class="chk-desc">static equilibrium เสมอ</p></div>
+<div class="chk"><p class="chk-name">E ⊥ ผิว conductor</p><p class="chk-desc">tangential component = 0</p></div>
+<div class="chk"><p class="chk-name">V = const บน conductor</p><p class="chk-desc">equipotential surface</p></div>
+</div></div>
+</div>
+<div class="page-footer">
+<button class="foot-btn" onclick="go('11')">← 11 Optics</button>
+<button class="foot-btn foot-home" onclick="goIndex()">⚛ หน้าแรก</button>
+<button class="foot-btn" onclick="go('13')">13 Circuits →</button>
+</div></div>
+
+<!-- ════════════════════════════════════ 13 CIRCUITS ════════════════════════════════════ -->
+<div id="p-13" class="page">
+<div class="hero"><p class="topic-tag">13 · Electromagnetism</p>
+<h1 class="topic-title">DC Circuits<br><span style="font-size:.55em;color:var(--muted);font-weight:400">วงจรไฟฟ้ากระแสตรง</span></h1>
+<p class="topic-sub">Simplify series/parallel ก่อน → Kirchhoff เมื่อจำเป็น → Thevenin สำหรับ load analysis · RC: universal formula เดียวครอบคลุมทุก case</p></div>
+<div class="wrap">
+<div class="section"><p class="sec-label">Decision Workflow</p>
+<div class="flow">
+<div class="fstep"><div class="fnum">1</div><div class="fbody">
+<p class="ftitle">Simplify ด้วย Series / Parallel</p>
+<div class="branches">
+<div class="br then"><p class="brlabel">Series R</p><p class="brtext">R_s = ΣRᵢ · I เท่ากันทุก R</p></div>
+<div class="br then"><p class="brlabel">Parallel R</p><p class="brtext">1/R_p = Σ1/Rᵢ · สองตัว: R = R₁R₂/(R₁+R₂)</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">2</div><div class="fbody">
+<p class="ftitle">Kirchhoff เมื่อ simplify ต่อไม่ได้</p>
+<div class="branches">
+<div class="br if"><p class="brlabel">KCL</p><p class="brtext">ΣI_in = ΣI_out · N nodes → N−1 equations</p></div>
+<div class="br if"><p class="brlabel">KVL</p><p class="brtext">ΣV = 0 รอบ loop · เลือก direction แล้วยึดตลอด</p></div>
+</div>
+<div class="tip"><b>KVL sign:</b> ข้าม battery ทิศ +→− บวก EMF · ข้าม R ทิศเดียวกับ I สมมติ ลบ IR</div>
+</div></div>
+<div class="fstep"><div class="fnum">3</div><div class="fbody">
+<p class="ftitle">Thevenin Equivalent</p>
+<div class="branches">
+<div class="br then"><p class="brlabel">V_th</p><p class="brtext">= V_oc ที่ขั้ว load เมื่อ open circuit</p></div>
+<div class="br then"><p class="brlabel">R_th</p><p class="brtext">Short voltage sources · Open current sources → R_eq ที่ขั้ว load</p></div>
+<div class="br note"><p class="brlabel">Max power transfer</p><p class="brtext">R_load = R_th → P_max = V_th²/4R_th</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">4</div><div class="fbody">
+<p class="ftitle">RC Transient — Universal Formula</p>
+<p class="fdesc">V_C(t) = V_f + (V_i − V_f)e^(−t/τ) · τ = RC · ใช้ได้ทุก case</p>
+<div class="branches">
+<div class="br note"><p class="brlabel">หา V_i</p><p class="brtext">t=0: uncharged C = short · fully charged C = open</p></div>
+<div class="br note"><p class="brlabel">หา V_f</p><p class="brtext">t→∞: C = open circuit · I = 0</p></div>
+</div></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Key Equations</p>
+<details open><summary>Circuits & RC Transients</summary><div class="d-body"><div class="eq-grid">
+<div class="eq"><p class="eq-name">Ohm's Law</p><p class="eq-f">V = IR</p></div>
+<div class="eq"><p class="eq-name">Power</p><p class="eq-f">P = IV = I²R = V²/R</p></div>
+<div class="eq"><p class="eq-name">RC universal</p><p class="eq-f">V_C(t) = V_f + (V_i−V_f)e^(−t/RC)</p></div>
+<div class="eq"><p class="eq-name">Time constant</p><p class="eq-f">τ = RC · t=5τ ≈ steady state</p></div>
+<div class="eq"><p class="eq-name">Terminal voltage</p><p class="eq-f">V = ε − Ir</p><p class="eq-note">r = internal resistance</p></div>
+</div></div></details>
+</div>
+<div class="section"><p class="sec-label">Common Pitfalls</p>
+<div class="pitfalls">
+<div class="pit"><span class="pit-ico">⚠️</span><div><p class="pit-title">Capacitor ใน DC steady state = open circuit</p><p class="pit-desc">t → ∞ ไม่มีกระแสผ่าน C · ถ้า uncharged ที่ t=0: C ทำตัวเหมือน short · ถ้า fully charged: C ทำตัวเหมือน open</p></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Sanity Checks</p>
+<div class="checks">
+<div class="chk"><p class="chk-name">Power balance</p><p class="chk-desc">ΣP_sources = ΣP_resistors</p></div>
+<div class="chk"><p class="chk-name">V_C ต่อเนื่อง</p><p class="chk-desc">เปลี่ยนทันทีไม่ได้ที่ t=0</p></div>
+<div class="chk"><p class="chk-name">KCL ทุก node</p><p class="chk-desc">ตรวจว่า I เข้า = I ออก</p></div>
+</div></div>
+</div>
+<div class="page-footer">
+<button class="foot-btn" onclick="go('12')">← 12 Electrostatics</button>
+<button class="foot-btn foot-home" onclick="goIndex()">⚛ หน้าแรก</button>
+<button class="foot-btn" onclick="go('14')">14 Magnetism →</button>
+</div></div>
+
+<!-- ════════════════════════════════════ 14 MAGNETISM ════════════════════════════════════ -->
+<div id="p-14" class="page">
+<div class="hero"><p class="topic-tag">14 · Electromagnetism</p>
+<h1 class="topic-title">Magnetism &amp; Electrodynamics<br><span style="font-size:.55em;color:var(--muted);font-weight:400">แม่เหล็กและไฟฟ้าพลวัต</span></h1>
+<p class="topic-sub">B field ไม่ทำงาน (F ⊥ v) · Faraday ให้ EMF จาก flux change · Lenz บอกทิศกระแส · กระแสใน L เปลี่ยนทันทีไม่ได้</p></div>
+<div class="wrap">
+<div class="section"><p class="sec-label">Decision Workflow</p>
+<div class="flow">
+<div class="fstep"><div class="fnum">1</div><div class="fbody">
+<p class="ftitle">หา B Field — Symmetry หรือ Biot-Savart?</p>
+<div class="branches">
+<div class="br if"><p class="brlabel">Symmetry → Ampere</p><p class="brtext">∮ B·dl = μ₀I_enc · Amperian loop ที่ B ขนาน dl · |B| คงที่</p></div>
+<div class="br if"><p class="brlabel">ไม่มี symmetry → Biot-Savart</p><p class="brtext">dB = (μ₀/4π) Idl×r̂/r² · integrate ตาม current path</p></div>
+<div class="br note"><p class="brlabel">Solenoid</p><p class="brtext">B = μ₀nI ภายใน · B ≈ 0 ภายนอก</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">2</div><div class="fbody">
+<p class="ftitle">Magnetic Force — ไม่ทำงาน!</p>
+<div class="branches">
+<div class="br then"><p class="brlabel">Particle</p><p class="brtext">F = qv×B · ถ้า v⊥B → circular orbit · r = mv/(|q|B)</p></div>
+<div class="br then"><p class="brlabel">Current wire</p><p class="brtext">F = IL×B</p></div>
+<div class="br warn"><p class="brlabel">W_B = 0 เสมอ</p><p class="brtext">F_B ⊥ v → ไม่เปลี่ยน speed ไม่มีเทอม B ใน energy eq</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">3</div><div class="fbody">
+<p class="ftitle">Faraday's Law: ε = −dΦ_B/dt</p>
+<div class="branches">
+<div class="br if"><p class="brlabel">B เปลี่ยน</p><p class="brtext">ε = −A dB/dt</p></div>
+<div class="br if"><p class="brlabel">Area เปลี่ยน</p><p class="brtext">Motional EMF · ε = Blv</p></div>
+<div class="br if"><p class="brlabel">θ เปลี่ยน (rotating coil)</p><p class="brtext">ε = NBAω sin(ωt)</p></div>
+<div class="br note"><p class="brlabel">Lenz's Law</p><p class="brtext">กระแสที่ induced ต้านการเปลี่ยนแปลง flux เดิม</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">4</div><div class="fbody">
+<p class="ftitle">RL Transient</p>
+<p class="fdesc">I(t) = I_f + (I_i − I_f)e^(−t/τ) · τ = L/R · I ใน L เปลี่ยนทันทีไม่ได้</p>
+<div class="branches">
+<div class="br note"><p class="brlabel">t=0</p><p class="brtext">I_i = กระแสก่อน switching</p></div>
+<div class="br note"><p class="brlabel">t→∞</p><p class="brtext">L = short circuit · V ข้าม L = 0</p></div>
+</div></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Key Equations</p>
+<details open><summary>Magnetic Field & Induction</summary><div class="d-body"><div class="eq-grid">
+<div class="eq"><p class="eq-name">Infinite wire</p><p class="eq-f">B = μ₀I/(2πr)</p></div>
+<div class="eq"><p class="eq-name">Solenoid</p><p class="eq-f">B = μ₀nI</p></div>
+<div class="eq"><p class="eq-name">Cyclotron radius</p><p class="eq-f">r = mv/(|q|B)</p></div>
+<div class="eq"><p class="eq-name">Faraday's Law</p><p class="eq-f">ε = −dΦ_B/dt</p></div>
+<div class="eq"><p class="eq-name">Motional EMF</p><p class="eq-f">ε = Blv</p></div>
+<div class="eq"><p class="eq-name">Self-inductance</p><p class="eq-f">ε = −L dI/dt · U = ½LI²</p></div>
+<div class="eq"><p class="eq-name">LC oscillation</p><p class="eq-f">ω = 1/√(LC)</p></div>
+</div></div></details>
+</div>
+<div class="section"><p class="sec-label">Common Pitfalls</p>
+<div class="pitfalls">
+<div class="pit"><span class="pit-ico">⚠️</span><div><p class="pit-title">B field ไม่ทำงาน — ห้ามใส่ใน energy equation</p><p class="pit-desc">F_B ⊥ v เสมอ → W = 0 · ใน energy balance ไม่มีเทอม B · ถ้าเห็น charged particle in B field ใช้ geometry ของ circular motion</p></div></div>
+<div class="pit"><span class="pit-ico">⚠️</span><div><p class="pit-title">Lenz: ต้านการเปลี่ยนแปลง flux ไม่ใช่ต้าน B เอง</p><p class="pit-desc">ถ้า flux กำลังเพิ่มขึ้น กระแส induced สร้าง B ทิศตรงข้ามกับ B ที่เพิ่ม ไม่ใช่ทิศตรงข้ามกับ B ทั้งหมด</p></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Sanity Checks</p>
+<div class="checks">
+<div class="chk"><p class="chk-name">F_B ⊥ v</p><p class="chk-desc">B ไม่เปลี่ยน speed</p></div>
+<div class="chk"><p class="chk-name">Lenz direction</p><p class="chk-desc">ต้าน flux change</p></div>
+<div class="chk"><p class="chk-name">I ใน L ต่อเนื่อง</p><p class="chk-desc">เปลี่ยนทันทีไม่ได้</p></div>
+</div></div>
+</div>
+<div class="page-footer">
+<button class="foot-btn" onclick="go('13')">← 13 Circuits</button>
+<button class="foot-btn foot-home" onclick="goIndex()">⚛ หน้าแรก</button>
+<button class="foot-btn" onclick="go('15')">15 Modern →</button>
+</div></div>
+
+<!-- ════════════════════════════════════ 15 MODERN ════════════════════════════════════ -->
+<div id="p-15" class="page">
+<div class="hero"><p class="topic-tag">15 · Modern Physics</p>
+<h1 class="topic-title">Modern Physics<br><span style="font-size:.55em;color:var(--muted);font-weight:400">ฟิสิกส์สมัยใหม่</span></h1>
+<p class="topic-sub">Special Relativity · Quantum basics · Nuclear · ระบุ reference frame ก่อนเสมอ · E² = (pc)² + (mc²)² คือ invariant ที่ทรงพลังที่สุด</p></div>
+<div class="wrap">
+<div class="section"><p class="sec-label">Decision Workflow — Special Relativity</p>
+<div class="flow">
+<div class="fstep"><div class="fnum">1</div><div class="fbody">
+<p class="ftitle">ระบุ Frame และ Proper Quantities</p>
+<div class="branches">
+<div class="br if"><p class="brlabel">Proper time Δτ</p><p class="brtext">2 events เกิดที่ตำแหน่งเดิม → Δt = γΔτ</p></div>
+<div class="br if"><p class="brlabel">Proper length L₀</p><p class="brtext">วัดในขณะวัตถุอยู่นิ่ง → L = L₀/γ</p></div>
+<div class="br note"><p class="brlabel">γ ≥ 1 เสมอ</p><p class="brtext">γ = 1/√(1−v²/c²) · γ→∞ เมื่อ v→c</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">2</div><div class="fbody">
+<p class="ftitle">Relativistic Energy-Momentum</p>
+<p class="fdesc">E² = (pc)² + (mc²)² คือ Lorentz invariant · ใช้ใน collision relativistic ทุกประเภท</p>
+<div class="branches">
+<div class="br then"><p class="brlabel">Total energy</p><p class="brtext">E = γmc² · KE = (γ−1)mc²</p></div>
+<div class="br then"><p class="brlabel">Photon (m=0)</p><p class="brtext">E = pc = hf · p = h/λ</p></div>
+<div class="br warn"><p class="brlabel">KE ≠ ½mv²</p><p class="brtext">สูตร classic ใช้ได้เฉพาะ v ≪ c เท่านั้น</p></div>
+</div>
+<div class="tip"><b>Collision technique:</b> หา invariant mass ก่อน: (E_total)² − (p_total c)² = (m_inv c²)² · ค่านี้เท่ากันทุก frame</div>
+</div></div>
+<div class="fstep"><div class="fnum">3</div><div class="fbody">
+<p class="ftitle">Quantum Mechanics เบื้องต้น</p>
+<div class="branches">
+<div class="br then"><p class="brlabel">de Broglie</p><p class="brtext">λ = h/p สำหรับทุก particle</p></div>
+<div class="br then"><p class="brlabel">Photoelectric</p><p class="brtext">KE_max = hf − φ · threshold: f₀ = φ/h</p></div>
+<div class="br note"><p class="brlabel">Uncertainty</p><p class="brtext">ΔxΔp ≥ ℏ/2 · ΔEΔt ≥ ℏ/2</p></div>
+</div></div></div>
+<div class="fstep"><div class="fnum">4</div><div class="fbody">
+<p class="ftitle">Nuclear Physics</p>
+<div class="branches">
+<div class="br if"><p class="brlabel">α decay</p><p class="brtext">A→A−4, Z→Z−2</p></div>
+<div class="br if"><p class="brlabel">β⁻ decay</p><p class="brtext">n→p+e⁻+ν̄ · Z→Z+1</p></div>
+<div class="br then"><p class="brlabel">Q-value</p><p class="brtext">Q = (Δm)c² · Q>0: exothermic</p></div>
+<div class="br note"><p class="brlabel">Radioactive decay</p><p class="brtext">N = N₀e^(−λt) · t½ = ln2/λ</p></div>
+</div></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Key Equations</p>
+<details open><summary>Special Relativity</summary><div class="d-body"><div class="eq-grid">
+<div class="eq"><p class="eq-name">Lorentz factor</p><p class="eq-f">γ = 1/√(1−v²/c²)</p></div>
+<div class="eq"><p class="eq-name">Time dilation</p><p class="eq-f">Δt = γΔτ</p></div>
+<div class="eq"><p class="eq-name">Length contraction</p><p class="eq-f">L = L₀/γ</p></div>
+<div class="eq"><p class="eq-name">Energy-momentum invariant</p><p class="eq-f">E² = (pc)² + (mc²)²</p></div>
+<div class="eq"><p class="eq-name">Total energy</p><p class="eq-f">E = γmc² · KE = (γ−1)mc²</p></div>
+<div class="eq"><p class="eq-name">Velocity addition</p><p class="eq-f">u' = (u−v)/(1−uv/c²)</p></div>
+</div></div></details>
+<details><summary>Quantum & Nuclear</summary><div class="d-body"><div class="eq-grid">
+<div class="eq"><p class="eq-name">Photon energy</p><p class="eq-f">E = hf = hc/λ</p><p class="eq-note">h = 6.626×10⁻³⁴ J·s</p></div>
+<div class="eq"><p class="eq-name">de Broglie</p><p class="eq-f">λ = h/p</p></div>
+<div class="eq"><p class="eq-name">Photoelectric</p><p class="eq-f">KE_max = hf − φ</p></div>
+<div class="eq"><p class="eq-name">H atom energy levels</p><p class="eq-f">E_n = −13.6 eV/n²</p></div>
+<div class="eq"><p class="eq-name">Heisenberg uncertainty</p><p class="eq-f">ΔxΔp ≥ ℏ/2</p></div>
+<div class="eq"><p class="eq-name">Radioactive decay</p><p class="eq-f">N = N₀e^(−λt) · t½ = ln2/λ</p></div>
+<div class="eq"><p class="eq-name">Q-value</p><p class="eq-f">Q = (m_reactants − m_products)c²</p></div>
+</div></div></details>
+</div>
+<div class="section"><p class="sec-label">Common Pitfalls</p>
+<div class="pitfalls">
+<div class="pit"><span class="pit-ico">⚠️</span><div><p class="pit-title">KE = ½mv² ไม่ถูกสำหรับ relativistic particles</p><p class="pit-desc">สูตร classic ใช้ได้เฉพาะ v ≪ c · ต้องใช้ KE = (γ−1)mc² เสมอสำหรับ high-energy particles</p></div></div>
+<div class="pit"><span class="pit-ico">⚠️</span><div><p class="pit-title">Proper time ≠ Proper length: ต้องระบุ frame</p><p class="pit-desc">Proper time = เวลาในขณะที่ events เกิดที่ตำแหน่งเดิม · Proper length = ความยาวในขณะวัตถุอยู่นิ่ง · ระบุ frame ก่อนเสมอ</p></div></div>
+</div></div>
+<div class="section"><p class="sec-label">Sanity Checks</p>
+<div class="checks">
+<div class="chk"><p class="chk-name">γ ≥ 1</p><p class="chk-desc">เสมอ · = 1 เมื่อ v = 0</p></div>
+<div class="chk"><p class="chk-name">E ≥ mc²</p><p class="chk-desc">total energy ≥ rest energy</p></div>
+<div class="chk"><p class="chk-name">A, Z conserve</p><p class="chk-desc">ใน nuclear reactions ทุกครั้ง</p></div>
+<div class="chk"><p class="chk-name">v→0 limit</p><p class="chk-desc">ต้องได้ classical physics กลับมา</p></div>
+</div></div>
+</div>
+<div class="page-footer">
+<button class="foot-btn" onclick="go('14')">← 14 Magnetism</button>
+<button class="foot-btn foot-home" onclick="goIndex()">⚛ หน้าแรก</button>
+<span style="color:var(--muted);font-size:13px">จบทุกหัวข้อ ✓</span>
+</div></div>
+
+<script>
+const ids=['index','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15'];
+const names={index:'Physics Guide',
+'01':'01 Kinematics','02':'02 Dynamics','03':'03 Energy','04':'04 Momentum',
+'05':'05 Rotation','06':'06 SHM','07':'07 Gravity','08':'08 Fluids',
+'09':'09 Thermo','10':'10 Waves','11':'11 Optics','12':'12 Electrostatics',
+'13':'13 Circuits','14':'14 Magnetism','15':'15 Modern Physics'};
+
+function go(id){
+  ids.forEach(i=>{
+    const el=document.getElementById('p-'+i);
+    if(el){el.className=i===id?'page active':'page';}
+  });
+  document.getElementById('nav-cur').textContent=names[id]||id;
+  const bw=document.getElementById('back-wrap');
+  bw.style.display=id==='index'?'none':'flex';
+  window.scrollTo({top:0,behavior:'instant'});
+  history.pushState({id},'','#'+id);
+}
+
+function goIndex(){go('index');}
+
+window.addEventListener('popstate',e=>{
+  const id=(e.state&&e.state.id)||(location.hash.slice(1))||'index';
+  go(id);
+});
+
+const init=location.hash.slice(1)||'index';
+go(init);
+</script>
+</body>
+</html>
