@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>多少钱 — Content SRS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg: #EFEBE0;
+  --paper: #FDFBF5;
+  --ink: #14161B;
+  --ink-2: #4A4E57;
+  --ink-3: #8A8E96;
+  --line: #DAD3C0;
+  --again: #C4453D;
+  --hard: #C68A3A;
+  --good: #4E8A63;
+  --easy: #3A5FA0;
+  --warn: #B84545;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'IBM Plex Sans Thai','Inter',sans-serif;
+  min-height:100vh;
+  background-image:
+    radial-gradient(circle at 10% 8%, rgba(78,138,99,0.05), transparent 40%),
+    radial-gradient(circle at 90% 92%, rgba(58,95,160,0.05), transparent 40%);
+}
+.wrap{max-width:720px;margin:0 auto;padding:24px 16px 80px;}
+
+header.top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:18px;flex-wrap:wrap;gap:8px;}
+header.top h1{font-family:'Fraunces',serif;font-style:italic;font-weight:600;font-size:1.5rem;margin:0;letter-spacing:-0.01em;}
+header.top .sub{font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--ink-3);}
+
+.timer{font-family:'JetBrains Mono',monospace;font-size:0.85rem;color:var(--ink-2);border:1px solid var(--line);padding:4px 10px;background:var(--paper);}
+
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:14px;}
+.stat{background:var(--paper);padding:10px 6px;text-align:center;}
+.stat .n{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.15rem;}
+.stat .l{font-size:0.62rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.04em;margin-top:2px;font-family:'JetBrains Mono',monospace;}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;}
+.chip{
+  border:1px solid var(--line);background:var(--paper);color:var(--ink-2);
+  font-family:'JetBrains Mono',monospace;font-size:0.72rem;padding:6px 10px;
+  cursor:pointer;user-select:none;display:flex;gap:6px;align-items:center;
+}
+.chip.active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+.chip .c{opacity:0.6;}
+
+.card-area{position:relative;min-height:340px;}
+.card{
+  background:var(--paper);border:1px solid var(--line);
+  min-height:340px;display:flex;flex-direction:column;
+  cursor:pointer;position:relative;
+}
+.card-top{display:flex;justify-content:space-between;padding:14px 16px 0;}
+.tag{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.05em;}
+.stage{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--ink-3);}
+
+.card-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 24px;text-align:center;gap:10px;}
+.front-text{font-family:'Fraunces',serif;font-weight:600;font-size:2.6rem;line-height:1.2;}
+.front-sub{font-family:'JetBrains Mono',monospace;color:var(--ink-2);font-size:1rem;}
+
+.divider{border-top:1px dashed var(--line);margin:0 20px;}
+
+.back-area{padding:18px 24px 22px;display:flex;flex-direction:column;gap:8px;text-align:center;}
+.back-answer{font-family:'Fraunces',serif;font-style:italic;font-weight:500;font-size:1.3rem;color:var(--ink);}
+.back-en{font-size:0.85rem;color:var(--ink-2);}
+.back-note{font-size:0.85rem;color:var(--ink-2);line-height:1.5;}
+.back-warn{font-size:0.82rem;color:var(--warn);font-weight:600;background:rgba(184,69,69,0.08);padding:6px 10px;display:inline-block;border:1px solid rgba(184,69,69,0.25);}
+.back-hint{font-size:0.75rem;color:var(--ink-3);font-style:italic;}
+
+.flip-hint{position:absolute;bottom:8px;right:12px;font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:var(--ink-3);}
+
+.ratings{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:14px;}
+.rate-btn{
+  background:var(--paper);border:none;border-top:3px solid var(--r);
+  padding:10px 4px;font-family:'JetBrains Mono',monospace;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--ink);
+}
+.rate-btn:hover{background:var(--bg);}
+.rate-btn .k{font-size:0.62rem;color:var(--ink-3);}
+.rate-btn .name{font-weight:700;font-size:0.8rem;}
+.rate-btn .iv{font-size:0.68rem;color:var(--ink-2);}
+
+.empty{
+  background:var(--paper);border:1px solid var(--line);min-height:340px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:24px;
+}
+.empty .msg{font-family:'Fraunces',serif;font-style:italic;font-size:1.4rem;}
+.empty .next{font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--ink-2);}
+.empty button{
+  margin-top:6px;background:var(--ink);color:var(--paper);border:none;padding:9px 18px;
+  font-family:'JetBrains Mono',monospace;font-size:0.78rem;cursor:pointer;
+}
+
+.kbd-legend{margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--ink-3);text-align:center;}
+.kbd-legend kbd{border:1px solid var(--line);padding:1px 5px;background:var(--paper);}
+
+@media (max-width:520px){
+  .front-text{font-size:2rem;}
+  .stats{grid-template-columns:repeat(5,1fr);}
+  .stat .n{font-size:0.95rem;}
+  header.top h1{font-size:1.2rem;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>多少钱 · Content SRS</h1>
+      <div class="sub">第二课 — บทเรียนภาษาจีน ม.ปลาย</div>
+    </div>
+    <div class="timer" id="sessionTimer">00:00</div>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><div class="n" id="statDue">0</div><div class="l">Due</div></div>
+    <div class="stat"><div class="n" id="statNew">0</div><div class="l">New</div></div>
+    <div class="stat"><div class="n" id="statLearn">0</div><div class="l">Learn</div></div>
+    <div class="stat"><div class="n" id="statReview">0</div><div class="l">Review</div></div>
+    <div class="stat"><div class="n" id="statAcc">—</div><div class="l">Accuracy</div></div>
+  </div>
+
+  <div class="chips" id="chips"></div>
+
+  <div class="card-area" id="cardArea"></div>
+
+  <div class="kbd-legend">
+    <kbd>Space</kbd>/<kbd>Enter</kbd> พลิกการ์ด &nbsp;·&nbsp; <kbd>1</kbd> Again <kbd>2</kbd> Hard <kbd>3</kbd> Good <kbd>4</kbd> Easy
+  </div>
+</div>
+
+<script>
+/* ============ CONFIG ============ */
+const LEARNING_STEPS = [20, 60, 300]; // seconds
+const GRAD_INTERVAL = 600;
+const EASY_GRAD_INTERVAL = 900;
+const MIN_EASE = 1.3, MAX_EASE = 3.0, DEFAULT_EASE = 2.5;
+const HARD_MULT = 1.2, EASY_MULT = 1.3;
+const MAX_INTERVAL = 14400;
+const STORAGE_KEY = "duoshaoqian_content_srs_v1";
+
+/* ============ CARD CONTENT ============ */
+const CARDS = [
+  // ---- VOCAB ----
+  {id:'v01', cat:'vocab', front:'多少钱', frontLang:'target', back:'duōshǎo qián — ราคาเท่าไหร่ / กี่บาท', backLang:'th',
+    note:'ใช้ถามราคาสิ่งของ<br><em>一杯可乐多少钱？</em> — Yì bēi kělè duōshǎo qián? (โคล่าแก้วนึงราคาเท่าไหร่)'},
+  {id:'v02', cat:'vocab', front:'热狗', frontLang:'target', back:'règǒu — ฮอทดอก', backLang:'th',
+    note:'<em>我要一根热狗。</em> — Wǒ yào yì gēn règǒu.',
+    warn:'ลักษณนามของ 热狗 คือ 根 (gēn) ไม่ใช่ 个'},
+  {id:'v03', cat:'vocab', front:'个', frontLang:'target', back:'gè — ลักษณนามทั่วไป (ชิ้น/อัน/คน)', backLang:'th',
+    note:'<em>我要一个汉堡包。</em> — Wǒ yào yí gè hànbǎobāo.'},
+  {id:'v04', cat:'vocab', front:'汉堡包', frontLang:'target', back:'hànbǎobāo — แฮมเบอร์เกอร์', backLang:'th',
+    note:'<em>我喜欢吃汉堡包。</em> — Wǒ xǐhuān chī hànbǎobāo.'},
+  {id:'v05', cat:'vocab', front:'杯', frontLang:'target', back:'bēi — ลักษณนามแก้ว (สำหรับเครื่องดื่ม)', backLang:'th',
+    note:'<em>我买了一杯可乐。</em> — Wǒ mǎi le yì bēi kělè.'},
+  {id:'v06', cat:'vocab', front:'可乐', frontLang:'target', back:'kělè — โคล่า', backLang:'th',
+    note:'<em>我喜欢喝可乐。</em> — Wǒ xǐhuān hē kělè.'},
+  {id:'v07', cat:'vocab', front:'一共', frontLang:'target', back:'yígòng — ทั้งหมด / รวมทั้งหมด', backLang:'th',
+    note:'<em>一共十三块钱。</em> — Yí gòng shísān kuài qián.'},
+  {id:'v08', cat:'vocab', front:'块', frontLang:'target', back:'kuài — หน่วยเงิน (ภาษาพูด) = 元 ในภาษาเขียน', backLang:'th',
+    note:'<em>汉堡包10块钱。</em> — Hànbǎobāo shí kuài qián.',
+    warn:'อย่าสับสน 块 (พูด) กับ 元 (เขียน) — ความหมายเดียวกัน'},
+  {id:'v09', cat:'vocab', front:'还', frontLang:'target', back:'hái — ยัง / ยังอีก', backLang:'th',
+    note:'<em>还有薯条吗？</em> — Hái yǒu shǔtiáo ma? (ยังมีเฟรนช์ฟรายส์ไหม)'},
+  {id:'v10', cat:'vocab', front:'别的', frontLang:'target', back:'biéde — อื่น ๆ', backLang:'th',
+    note:'<em>不要别的了。</em> — Bú yào biéde le. (ไม่เอาอย่างอื่นแล้ว)'},
+  {id:'v11', cat:'vocab', front:'一斤', frontLang:'target', back:'yì jīn — ครึ่งกิโลกรัม (500 กรัม)', backLang:'th',
+    note:'<em>他喝了一斤酒。</em> — Tā hē le yì jīn jiǔ.',
+    warn:'1斤 = 500 กรัม ไม่ใช่ 1 กิโลกรัม'},
+  {id:'v12', cat:'vocab', front:'面包', frontLang:'target', back:'miànbāo — ขนมปัง', backLang:'th',
+    note:'<em>我喜欢吃面包。</em> — Wǒ xǐhuān chī miànbāo.'},
+
+  // ---- GRAMMAR ----
+  {id:'g01', cat:'grammar', front:'要 (yào)', frontLang:'target', back:'แปลว่า "ต้องการ" — ใช้ถาม/บอกสิ่งที่ต้องการ', backLang:'th',
+    note:'โครงสร้าง: <strong>Subject + 要 + Object</strong><br><em>你要什么？</em> Nǐ yào shénme? → <em>我要汉堡包。</em> Wǒ yào hànbǎobāo.'},
+  {id:'g02', cat:'grammar', front:'量词 (ลักษณนาม) — โครงสร้าง', frontLang:'th', back:'จำนวน + ลักษณนาม + คำนาม', backLang:'th',
+    note:'ตัวอย่าง: 一个汉堡包 · 两个人 · 一杯可乐 · 一本书',
+    warn:'ภาษาจีนสลับตำแหน่งกับภาษาไทย! ไทย = คำนาม+จำนวน+ลักษณนาม แต่จีน = จำนวน+ลักษณนาม+คำนาม'},
+  {id:'g03', cat:'grammar', front:'两 vs 二 หน้าลักษณนาม', frontLang:'th', back:'ใช้ 两 (liǎng) ไม่ใช่ 二 (èr) เมื่ออยู่หน้าลักษณนาม', backLang:'th',
+    note:'<em>两个人</em> liǎng gè rén (ถูก) ไม่ใช่ <em>二个人</em>',
+    warn:'จุดที่คนพลาดบ่อยที่สุดจุดหนึ่ง'},
+  {id:'g04', cat:'grammar', front:'หน่วยเงินจีน — เขียน vs พูด', frontLang:'th', back:'เขียน: 元(yuán)=10角(jiǎo)=100分(fēn)　·　พูด: 块(kuài)=10毛(máo)=100分(fēn)', backLang:'th',
+    note:'ในบทสนทนาจริงใช้ 块/毛 เกือบทั้งหมด ส่วน 元/角 ใช้ในภาษาเขียน/ป้ายราคา'},
+  {id:'g05', cat:'grammar', front:'โครงสร้างประโยคถามราคา', frontLang:'th', back:'(数词+量词+名词) + 多少钱？', backLang:'th',
+    note:'ตัวอย่าง: <em>一杯可乐多少钱？</em> Yì bēi kělè duōshǎo qián?<br>= (จำนวน+ลักษณนาม+คำนาม) + ราคาเท่าไหร่'},
+  {id:'g06', cat:'grammar', front:'ลักษณนามเฉพาะคำ', frontLang:'th', back:'个 (ทั่วไป) · 杯 (แก้ว/ของเหลว) · 根 (ของยาว เช่น 热狗) · 本 (เล่ม, หนังสือ)', backLang:'th',
+    note:'แต่ละคำนามมีลักษณนามเฉพาะของตัวเอง ต้องจำเป็นคู่ ๆ',
+    warn:'ใช้ลักษณนามผิดคำ (เช่น 一个热狗 แทน 一根热狗) เป็นข้อผิดพลาดที่พบบ่อย'},
+
+  // ---- DIALOGUE (production) ----
+  {id:'d01', cat:'dialogue', front:'พนักงานทักทายลูกค้าและถามว่าจะซื้ออะไร (สุภาพ)', frontLang:'th', back:'欢迎欢迎，您要买什么？', backLang:'target',
+    note:'Huānyíng huānyíng, nín yào mǎi shénme?'},
+  {id:'d02', cat:'dialogue', front:'ลูกค้าบอกว่าต้องการแฮมเบอร์เกอร์ 1 อัน โคล่า 1 แก้ว แล้วถามราคา', frontLang:'th', back:'我要一个汉堡、一杯可乐，多少钱？', backLang:'target',
+    note:'Wǒ yào yí gè hànbǎo, yì bēi kělè duōshǎo qián?'},
+  {id:'d03', cat:'dialogue', front:'พนักงานบอกราคารวม 13 หยวน แล้วถามว่าเอาอย่างอื่นอีกไหม', frontLang:'th', back:'一共十三块钱。还要别的吗？', backLang:'target',
+    note:'Yígòng shísān kuàiqián. Hái yào bié de ma?'},
+  {id:'d04', cat:'dialogue', front:'ลูกค้าปฏิเสธอย่างสุภาพ (ไม่เอาแล้ว)', frontLang:'th', back:'不要了。', backLang:'target',
+    note:'Bú yào le.'},
+];
+
+const CAT_LABELS = {vocab:'คำศัพท์', grammar:'ไวยากรณ์', dialogue:'บทสนทนา'};
+
+/* ============ STORAGE (window.storage with in-memory fallback) ============ */
+const memoryStore = {};
+async function storageGet(key){
+  try{
+    if(window.storage){
+      const r = await window.storage.get(key);
+      return r ? r.value : null;
+    }
+  }catch(e){}
+  return memoryStore[key] !== undefined ? memoryStore[key] : null;
+}
+async function storageSet(key, val){
+  try{
+    if(window.storage){
+      const r = await window.storage.set(key, val);
+      if(r) return;
+    }
+  }catch(e){}
+  memoryStore[key] = val;
+}
+
+/* ============ STATE ============ */
+let state = {}; // id -> card state
+let sessionCorrect = 0, sessionTotal = 0;
+let activeCat = 'all';
+let currentCardId = null;
+let lastCardId = null;
+let flipped = false;
+let sessionStart = Date.now();
+
+function freshState(){
+  return {phase:'new', stepIndex:0, intervalSec:0, ease:DEFAULT_EASE, dueAt:0, reps:0, lapses:0};
+}
+
+async function loadState(){
+  const raw = await storageGet(STORAGE_KEY);
+  let saved = {};
+  if(raw){
+    try{ saved = JSON.parse(raw); }catch(e){ saved = {}; }
+  }
+  const merged = {};
+  for(const c of CARDS){
+    merged[c.id] = saved[c.id] || freshState();
+  }
+  state = merged;
+}
+
+async function saveState(){
+  try{
+    await storageSet(STORAGE_KEY, JSON.stringify(state));
+  }catch(e){ console.error('save failed', e); }
+}
+
+/* ============ SRS LOGIC ============ */
+function clampEase(e){ return Math.max(MIN_EASE, Math.min(MAX_EASE, e)); }
+function clampInterval(i){ return Math.min(MAX_INTERVAL, Math.max(1, Math.round(i))); }
+
+function computeNext(s, rating){
+  const ns = Object.assign({}, s);
+  const nowT = Math.floor(Date.now()/1000);
+  ns.reps = s.reps + 1;
+
+  if(s.phase === 'new' || s.phase === 'learning'){
+    if(rating === 1){ // Again
+      ns.phase = 'learning'; ns.stepIndex = 0;
+      ns.ease = clampEase(s.ease - 0.2);
+      ns.intervalSec = LEARNING_STEPS[0];
+      if(s.phase === 'review') ns.lapses = s.lapses + 1;
+    } else if(rating === 2){ // Hard
+      ns.phase = 'learning';
+      ns.ease = clampEase(s.ease - 0.15);
+      ns.intervalSec = clampInterval(LEARNING_STEPS[s.stepIndex] * HARD_MULT);
+    } else if(rating === 3){ // Good
+      const next = s.stepIndex + 1;
+      if(next >= LEARNING_STEPS.length){
+        ns.phase = 'review'; ns.stepIndex = 0;
+        ns.intervalSec = GRAD_INTERVAL;
+      } else {
+        ns.phase = 'learning'; ns.stepIndex = next;
+        ns.intervalSec = LEARNING_STEPS[next];
+      }
+    } else if(rating === 4){ // Easy
+      ns.phase = 'review'; ns.stepIndex = 0;
+      ns.ease = clampEase(s.ease + 0.15);
+      ns.intervalSec = EASY_GRAD_INTERVAL;
+    }
+  } else { // review
+    if(rating === 1){
+      ns.phase = 'learning'; ns.stepIndex = 0;
+      ns.ease = clampEase(s.ease - 0.2);
+      ns.intervalSec = LEARNING_STEPS[0];
+      ns.lapses = s.lapses + 1;
+    } else if(rating === 2){
+      ns.ease = clampEase(s.ease - 0.15);
+      ns.intervalSec = clampInterval(s.intervalSec * HARD_MULT);
+    } else if(rating === 3){
+      ns.intervalSec = clampInterval(s.intervalSec * s.ease);
+    } else if(rating === 4){
+      ns.ease = clampEase(s.ease + 0.15);
+      ns.intervalSec = clampInterval(s.intervalSec * s.ease * EASY_MULT);
+    }
+  }
+  ns.dueAt = nowT + ns.intervalSec;
+  return ns;
+}
+
+function fmtInterval(sec){
+  if(sec < 60) return Math.round(sec)+'s';
+  if(sec < 3600) return Math.round(sec/60)+'m';
+  return (sec/3600).toFixed(1).replace(/\.0$/,'')+'h';
+}
+
+/* ============ QUEUE ============ */
+function dueCards(){
+  const nowT = Math.floor(Date.now()/1000);
+  return CARDS.filter(c => {
+    if(activeCat !== 'all' && c.cat !== activeCat) return false;
+    const s = state[c.id];
+    if(s.phase === 'new') return true;
+    return s.dueAt <= nowT;
+  }).sort((a,b) => {
+    const sa = state[a.id], sb = state[b.id];
+    // learning/due-soonest first, new cards mixed in after
+    const pa = sa.phase === 'new' ? 1 : 0;
+    const pb = sb.phase === 'new' ? 1 : 0;
+    if(pa !== pb) return pa - pb;
+    return sa.dueAt - sb.dueAt;
+  });
+}
+
+function pickCard(){
+  const q = dueCards();
+  if(q.length === 0) return null;
+  if(q.length === 1) return q[0];
+  // anti-repeat: avoid same as last card if possible
+  const filtered = q.filter(c => c.id !== lastCardId);
+  return filtered.length ? filtered[0] : q[0];
+}
+
+function nextDueTime(){
+  const remaining = CARDS.filter(c => activeCat === 'all' || c.cat === activeCat)
+    .map(c => state[c.id]).filter(s => s.phase !== 'new');
+  if(remaining.length === 0) return null;
+  const min = Math.min(...remaining.map(s => s.dueAt));
+  return min;
+}
+
+/* ============ RENDER ============ */
+function renderChips(){
+  const chipsEl = document.getElementById('chips');
+  const cats = ['all', ...Object.keys(CAT_LABELS)];
+  chipsEl.innerHTML = '';
+  cats.forEach(cat => {
+    const count = cat === 'all' ? CARDS.length : CARDS.filter(c => c.cat === cat).length;
+    const label = cat === 'all' ? 'ทั้งหมด' : CAT_LABELS[cat];
+    const chip = document.createElement('div');
+    chip.className = 'chip' + (activeCat === cat ? ' active' : '');
+    chip.innerHTML = `${label} <span class="c">${count}</span>`;
+    chip.onclick = () => { activeCat = cat; renderChips(); nextCard(); };
+    chipsEl.appendChild(chip);
+  });
+}
+
+function renderStats(){
+  const inScope = CARDS.filter(c => activeCat === 'all' || c.cat === activeCat);
+  const nowT = Math.floor(Date.now()/1000);
+  let due=0,newC=0,learn=0,review=0;
+  inScope.forEach(c => {
+    const s = state[c.id];
+    if(s.phase === 'new') newC++;
+    else if(s.phase === 'learning') learn++;
+    else review++;
+    if(s.phase !== 'new' && s.dueAt <= nowT) due++;
+    if(s.phase === 'new') due++;
+  });
+  document.getElementById('statDue').textContent = due;
+  document.getElementById('statNew').textContent = newC;
+  document.getElementById('statLearn').textContent = learn;
+  document.getElementById('statReview').textContent = review;
+  document.getElementById('statAcc').textContent = sessionTotal ? Math.round(sessionCorrect/sessionTotal*100)+'%' : '—';
+}
+
+function renderCard(){
+  const area = document.getElementById('cardArea');
+  const card = pickCard();
+  if(!card){
+    const nd = nextDueTime();
+    let nextStr = 'ไม่มีการ์ดค้างแล้ว';
+    if(nd){
+      const diff = nd - Math.floor(Date.now()/1000);
+      nextStr = diff > 0 ? `การ์ดถัดไปใน ${fmtInterval(diff)}` : 'มีการ์ดพร้อมทบทวนแล้ว';
+    }
+    area.innerHTML = `<div class="empty">
+      <div class="msg">恭喜你！ ยินดีด้วย 🎉</div>
+      <div class="next">${nextStr}</div>
+      <button id="cramBtn">โหมด Cram (ทบทวนทั้งหมด)</button>
+    </div>`;
+    document.getElementById('cramBtn').onclick = crammode;
+    currentCardId = null;
+    return;
+  }
+  currentCardId = card.id;
+  flipped = false;
+  const s = state[card.id];
+  const stageLabel = s.phase === 'new' ? 'NEW' : s.phase === 'learning' ? 'LEARNING' : 'REVIEW';
+
+  area.innerHTML = `
+    <div class="card" id="cardEl">
+      <div class="card-top">
+        <div class="tag">${CAT_LABELS[card.cat]}</div>
+        <div class="stage">${stageLabel}</div>
+      </div>
+      <div class="card-body">
+        <div class="front-text">${card.front}</div>
+      </div>
+      <div class="flip-hint">คลิก / Space เพื่อพลิก</div>
+    </div>
+  `;
+  document.getElementById('cardEl').onclick = flipCard;
+}
+
+function flipCard(){
+  if(!currentCardId || flipped) return;
+  flipped = true;
+  const card = CARDS.find(c => c.id === currentCardId);
+  const s = state[card.id];
+  const area = document.getElementById('cardArea');
+
+  let backHtml = `<div class="back-answer">${card.back}</div>`;
+  if(card.note) backHtml += `<div class="back-note">${card.note}</div>`;
+  if(card.warn) backHtml += `<div class="back-warn">⚠ ${card.warn}</div>`;
+  if(card.hint) backHtml += `<div class="back-hint">${card.hint}</div>`;
+
+  const ratings = [1,2,3,4].map(r => {
+    const preview = computeNext(s, r);
+    const names = {1:'Again',2:'Hard',3:'Good',4:'Easy'};
+    const colors = {1:'var(--again)',2:'var(--hard)',3:'var(--good)',4:'var(--easy)'};
+    const keys = {1:'1',2:'2',3:'3',4:'4'};
+    return `<button class="rate-btn" style="--r:${colors[r]}" data-rating="${r}">
+      <div class="k">[${keys[r]}]</div>
+      <div class="name">${names[r]}</div>
+      <div class="iv">${fmtInterval(preview.intervalSec)}</div>
+    </button>`;
+  }).join('');
+
+  area.innerHTML = `
+    <div class="card" id="cardEl">
+      <div class="card-top">
+        <div class="tag">${CAT_LABELS[card.cat]}</div>
+        <div class="stage">${s.phase.toUpperCase()}</div>
+      </div>
+      <div class="card-body" style="padding-bottom:8px;">
+        <div class="front-text" style="font-size:1.8rem;">${card.front}</div>
+      </div>
+      <div class="divider"></div>
+      <div class="back-area">${backHtml}</div>
+    </div>
+    <div class="ratings">${ratings}</div>
+  `;
+  document.querySelectorAll('.rate-btn').forEach(btn => {
+    btn.onclick = () => rate(parseInt(btn.dataset.rating));
+  });
+}
+
+function rate(rating){
+  if(!currentCardId) return;
+  const card = CARDS.find(c => c.id === currentCardId);
+  const s = state[card.id];
+  const ns = computeNext(s, rating);
+  state[card.id] = ns;
+  sessionTotal++;
+  if(rating >= 3) sessionCorrect++;
+  lastCardId = currentCardId;
+  saveState();
+  renderStats();
+  nextCard();
+}
+
+function nextCard(){
+  renderStats();
+  renderCard();
+}
+
+let cramActive = false;
+function crammode(){
+  cramActive = true;
+  // temporarily treat all cards as due
+  const nowT = Math.floor(Date.now()/1000);
+  CARDS.forEach(c => { if(activeCat==='all' || c.cat===activeCat) state[c.id].dueAt = Math.min(state[c.id].dueAt, nowT); });
+  nextCard();
+}
+
+/* ============ SESSION TIMER ============ */
+function tickTimer(){
+  const diff = Math.floor((Date.now() - sessionStart)/1000);
+  const mm = String(Math.floor(diff/60)).padStart(2,'0');
+  const ss = String(diff%60).padStart(2,'0');
+  document.getElementById('sessionTimer').textContent = `${mm}:${ss}`;
+}
+setInterval(tickTimer, 1000);
+
+/* refresh due-state periodically in case cards become due while sitting idle */
+setInterval(() => { renderStats(); if(!currentCardId) renderCard(); }, 5000);
+
+/* ============ KEYBOARD ============ */
+document.addEventListener('keydown', (e) => {
+  if(e.code === 'Space' || e.code === 'Enter'){
+    e.preventDefault();
+    if(currentCardId && !flipped) flipCard();
+  } else if(['1','2','3','4'].includes(e.key)){
+    if(currentCardId && flipped) rate(parseInt(e.key));
+  }
+});
+
+/* ============ SAVE TRIGGERS ============ */
+window.addEventListener('beforeunload', saveState);
+document.addEventListener('visibilitychange', () => { if(document.hidden) saveState(); });
+
+/* ============ INIT ============ */
+(async function init(){
+  await loadState();
+  renderChips();
+  renderStats();
+  renderCard();
+})();
+</script>
+</body>
+</html>
