@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 ใบงานที่ 1: ถอดรหัสผจญภัย (Space Mission Flowchart Game)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --bg-space: #0b0e14;
+            --panel-bg: rgba(23, 32, 54, 0.85);
+            --border-neon: #00f0ff;
+            --accent-cyan: #00f0ff;
+            --accent-pink: #ff007f;
+            --accent-purple: #9d4edd;
+            --text-light: #e0f7fa;
+            --correct-color: #00ff87;
+            --wrong-color: #ff0055;
+            --gold-color: #ffb703;
+        }
+
+        * { box-sizing: border-box; user-select: none; }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background: var(--bg-space);
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(157, 78, 221, 0.25) 0%, transparent 45%),
+                radial-gradient(circle at 85% 80%, rgba(0, 240, 255, 0.2) 0%, transparent 45%);
+            background-attachment: fixed;
+            color: var(--text-light);
+            margin: 0; padding: 20px;
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+        }
+
+        #print-area {
+            width: 100%; display: flex; flex-direction: column; align-items: center;
+            background-color: var(--bg-space); padding-top: 10px; padding-bottom: 20px;
+        }
+
+        header { text-align: center; margin-bottom: 20px; width: 100%; max-width: 800px; }
+        h1 { font-size: 26px; font-weight: 700; color: #ffffff; text-shadow: 0 0 10px var(--accent-cyan), 0 0 20px rgba(0, 240, 255, 0.5); margin-bottom: 20px; }
+
+        .student-form-container { display: flex; gap: 12px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
+        .student-form-container input { padding: 10px 14px; background: rgba(11, 14, 20, 0.8); border: 1.5px solid var(--border-neon); border-radius: 8px; color: #fff; font-family: 'Sarabun', sans-serif; font-size: 14px; transition: all 0.3s; }
+        .student-form-container input:focus { outline: none; border-color: var(--accent-pink); box-shadow: 0 0 12px var(--accent-pink); }
+        #student-name, #student-surname { width: 160px; }
+        #student-class, #student-roll { width: 90px; }
+
+        .instruction-box { background: var(--panel-bg); border: 1px solid rgba(0, 240, 255, 0.4); padding: 15px 20px; border-radius: 12px; margin-bottom: 20px; font-size: 14px; line-height: 1.6; text-align: left; width: 100%; max-width: 800px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); backdrop-filter: blur(10px); margin-left: auto; margin-right: auto; }
+
+        .quiz-question-container { width: 100%; max-width: 800px; background: var(--panel-bg); border: 1.5px solid var(--accent-cyan); border-radius: 16px; padding: 20px 25px; margin-bottom: 25px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); }
+        .quiz-title { font-size: 16px; font-weight: 700; color: var(--gold-color); margin-bottom: 8px; }
+        .quiz-text { font-size: 15px; margin-bottom: 16px; }
+        .quiz-options { display: flex; flex-direction: column; gap: 12px; }
+        .quiz-option { display: flex; align-items: center; gap: 12px; background: rgba(11, 14, 20, 0.7); border: 1px solid rgba(0, 240, 255, 0.3); padding: 12px 18px; border-radius: 10px; cursor: pointer; }
+        .quiz-option:hover { border-color: var(--accent-cyan); background: rgba(0, 240, 255, 0.15); }
+        .quiz-option input[type="radio"] { appearance: none; width: 18px; height: 18px; border: 2px solid var(--accent-cyan); border-radius: 50%; cursor: pointer; }
+        .quiz-option input[type="radio"]:checked { background-color: var(--accent-cyan); box-shadow: 0 0 10px var(--accent-cyan); }
+        .quiz-option.correct { border-color: var(--correct-color) !important; background: rgba(0, 255, 135, 0.15) !important; }
+        .quiz-option.wrong { border-color: var(--wrong-color) !important; background: rgba(255, 0, 85, 0.15) !important; }
+
+        .toolbar { display: flex; gap: 12px; margin-bottom: 20px; width: 100%; max-width: 800px; justify-content: center; flex-wrap: wrap; }
+        button { font-family: 'Sarabun', sans-serif; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+        button.primary { background: linear-gradient(135deg, #00f0ff, #7000ff); color: #fff; }
+        button.secondary { background: rgba(255, 255, 255, 0.08); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); }
+        button.success { background: linear-gradient(135deg, #00ff87, #60efff); color: #0b0e14; font-weight: 700; }
+
+        .workspace { display: flex; width: 100%; max-width: 800px; gap: 12px; align-items: flex-start; justify-content: center; }
+        .palette-container { width: 250px; background: var(--panel-bg); padding: 20px; border-radius: 16px; border: 1px solid rgba(0, 240, 255, 0.3); height: fit-content; flex-shrink: 0; }
+        .palette-title { font-weight: 700; font-size: 16px; margin-bottom: 18px; text-align: center; border-bottom: 1px solid rgba(0, 240, 255, 0.3); padding-bottom: 12px; color: var(--accent-cyan); }
+        .palette { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+        .block { background: linear-gradient(135deg, rgba(23, 32, 54, 0.9), rgba(40, 55, 90, 0.9)); border: 1.5px solid var(--accent-cyan); padding: 8px 16px; border-radius: 8px; cursor: grab; text-align: center; font-size: 13px; font-weight: 600; z-index: 10; color: #fff; width: 200px; box-sizing: border-box; }
+
+        .canvas-container { flex: 1; max-width: 650px; margin: 0 auto; background: var(--panel-bg); border-radius: 16px; border: 1px solid rgba(0, 240, 255, 0.3); display: flex; flex-direction: column; align-items: center; position: relative; padding-top: 10px; padding-bottom: 10px; min-height: fit-content; width: 100%; }
+        #flowchart-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        
+        .slot { border: 2px dashed rgba(0, 240, 255, 0.4); background: rgba(11, 14, 20, 0.6); display: flex; align-items: center; justify-content: center; text-align: center; position: relative; z-index: 2; box-sizing: border-box; border-radius: 8px; }
+        .slot.correct { border: 2px solid var(--correct-color) !important; background: rgba(0, 255, 135, 0.1) !important; }
+        .slot.wrong { border: 2px solid var(--wrong-color) !important; background: rgba(255, 0, 85, 0.1) !important; }
+
+        .shape-oval { width: 220px; min-height: 50px; border-radius: 25px; margin: 5px 0; padding: 4px 0; }
+        .shape-rect { width: 220px; min-height: 50px; margin: 5px 0; padding: 4px 0; }
+        /* Text inside a slot always stays inside the slot: it wraps and the slot grows instead of overflowing */
+        .slot .block { width: calc(100% - 20px); max-width: 200px; line-height: 1.3; overflow-wrap: anywhere; word-break: normal; }
+
+        /* Decision diamond: the outline is drawn on the canvas (see drawFlowchartLines), so there is no rotated
+           element. The slot is a plain, unrotated box and the text inside it wraps normally. */
+        .diamond-wrapper { width: 190px; height: 130px; display: flex; align-items: center; justify-content: center; margin: 12px 0; position: relative; z-index: 2; }
+        .shape-diamond.slot, .shape-diamond.slot.correct, .shape-diamond.slot.wrong {
+            position: absolute; inset: 0; width: 100%; height: 100%; border: none !important; background: transparent !important; border-radius: 0; padding: 0;
+        }
+        .shape-diamond .block { width: 112px; max-width: 112px; font-size: 12px; padding: 4px 6px; line-height: 1.25; box-shadow: none; border: none; background: transparent; }
+
+        .branch-container { display: flex; justify-content: space-between; width: 100%; max-width: 520px; position: relative; margin-top: 5px; z-index: 2; }
+        .branch-left, .branch-right { display: flex; flex-direction: column; align-items: center; width: 45%; gap: 15px; }
+        .merge-circle { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--accent-cyan); margin: 22px auto 20px auto; background: #0b0e14; z-index: 2; }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 7, 12, 0.85); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: var(--panel-bg); border: 1px solid var(--accent-cyan); padding: 25px; border-radius: 16px; width: 85%; max-width: 600px; display: flex; flex-direction: column; gap: 12px; color: #fff; }
+        .result-card { background: var(--panel-bg); border: 1.5px solid var(--accent-cyan); width: 90%; max-width: 440px; border-radius: 20px; overflow: hidden; color: #fff; }
+        .result-header { background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(157, 78, 221, 0.2)); border-bottom: 1px solid rgba(0, 240, 255, 0.3); padding: 18px; text-align: center; }
+        .result-header h2 { margin: 0; font-size: 22px; color: #ffffff; }
+        .result-body { padding: 25px; text-align: center; font-size: 16px; }
+        .score-circle { width: 120px; height: 120px; border: 6px solid var(--gold-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 20px auto; font-size: 40px; font-weight: 700; background: rgba(11, 14, 20, 0.6); }
+        .result-footer { padding: 20px; display: flex; flex-direction: column; gap: 12px; align-items: center; background: rgba(11, 14, 20, 0.4); }
+        .result-footer button { width: 100%; justify-content: center; }
+
+        @media (max-width: 800px) { .workspace { flex-direction: column; align-items: center; } .palette-container, .canvas-container { width: 100%; } }
+
+        /* "Paper" theme: one light A4 layout shared by the PDF download and the browser print dialog.
+           JS adds .pdf-export-mode to #print-area while exporting/printing (see enterPaperMode). */
+        .pdf-export-mode {
+            width: 794px !important;
+            height: 1120px !important;
+            overflow: hidden !important;
+            padding: 24px 36px !important;
+            margin: 0 auto !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: flex-start !important;
+            box-sizing: border-box !important;
+            background: #ffffff !important;
+            color: #000000 !important;
+        }
+
+        .pdf-export-mode header,
+        .pdf-export-mode .instruction-box,
+        .pdf-export-mode .quiz-question-container,
+        .pdf-export-mode .workspace,
+        .pdf-export-mode .canvas-container {
+            max-width: 700px !important;
+            width: 100% !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+        .pdf-export-mode .canvas-container { max-width: 650px !important; }
+        .pdf-export-mode .palette-container { display: none !important; }
+
+        .pdf-export-mode h1 { color: #000000 !important; text-shadow: none !important; font-size: 20px !important; margin: 0 0 10px !important; }
+        .pdf-export-mode header { margin-bottom: 12px !important; }
+        .pdf-export-mode .student-form-container { margin-bottom: 10px !important; }
+        .pdf-export-mode .student-form-container input { background: #ffffff !important; color: #000000 !important; border: 1px solid #333 !important; padding: 7px 12px !important; }
+        .pdf-export-mode .instruction-box,
+        .pdf-export-mode .quiz-question-container,
+        .pdf-export-mode .canvas-container {
+            background: #ffffff !important;
+            color: #000000 !important;
+            border: 1px solid #666 !important;
+            box-shadow: none !important;
+            backdrop-filter: none !important;
+        }
+        .pdf-export-mode .instruction-box { font-size: 13px !important; padding: 10px 16px !important; margin-bottom: 0 !important; }
+        .pdf-export-mode .quiz-question-container { margin: 14px auto 0 !important; padding: 14px 20px !important; }
+        .pdf-export-mode .quiz-title { color: #9a5b00 !important; }
+        .pdf-export-mode .quiz-text { margin-bottom: 10px !important; }
+        .pdf-export-mode .quiz-options { gap: 8px !important; }
+        .pdf-export-mode .quiz-option { background: #ffffff !important; color: #000000 !important; border: 1px solid #333 !important; padding: 8px 14px !important; }
+        .pdf-export-mode .quiz-option input[type="radio"] { border: 2px solid #222 !important; background: #ffffff !important; box-shadow: none !important; }
+        .pdf-export-mode .quiz-option input[type="radio"]:checked { background: #222 !important; }
+        .pdf-export-mode .block { background: #f0f4f8 !important; color: #000000 !important; border: 1px solid #333 !important; }
+        /* Blocks placed in a slot: no inner box, the slot outline is the only border */
+        .pdf-export-mode .slot .block { background: transparent !important; border: none !important; }
+        .pdf-export-mode .slot { background: #fafafa !important; border-color: #555 !important; }
+        /* The diamond outline is drawn on the canvas, so its slot must never paint over it */
+        .pdf-export-mode .shape-diamond.slot { background: transparent !important; border: none !important; }
+        .pdf-export-mode .merge-circle { background: #ffffff !important; border-color: #222 !important; }
+
+        @media print {
+            @page { size: A4 portrait; margin: 0; }
+
+            html, body {
+                background: #ffffff !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                display: block !important;
+                min-height: 0 !important;
+            }
+            .toolbar, .modal { display: none !important; }
+            /* 296mm (not 297mm) so rounding can never push a blank second page */
+            .pdf-export-mode { width: 210mm !important; height: 296mm !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <button id="btn-pdf" class="success" onclick="downloadWorksheetPDF()">📄 โหลดใบงาน PDF</button>
+        <button id="btn-gsheet" class="secondary" onclick="openModal('gsheet-modal')">⚙️ ตั้งค่า Google Sheet</button>
+        <button id="btn-teacher" class="secondary" onclick="toggleTeacherMode()">โหมดครู (Teacher Mode)</button>
+        <button id="btn-check" class="primary" onclick="checkAnswers()">🎮 ตรวจคำตอบ (Check Answers)</button>
+    </div>
+
+    <div id="print-area">
+        <header>
+            <h1>🚀 ใบงานที่ 1: ถอดรหัสผจญภัย (Space Mission Flowchart Game) 🚀</h1>
+            <div class="student-form-container">
+                <input type="text" id="student-name" placeholder="ชื่อ" required>
+                <input type="text" id="student-surname" placeholder="นามสกุล" required>
+                <input type="text" id="student-class" placeholder="ชั้น" required>
+                <input type="text" id="student-roll" placeholder="เลขที่" required>
+            </div>
+            <div class="instruction-box">
+                <strong>ภารกิจ:</strong> ยานอวกาศของเรากำลังเดินทางผ่านดงดาวเคราะห์น้อย ให้นักเรียนสวมบทบาท "วิศวกรอวกาศ" ช่วยออกแบบ ผังงาน</br>(Flowchart)การทำงานของระบบตรวจจับวัตถุให้ยานอวกาศลำนี้<br><br>
+                <strong>คำสั่ง:</strong> ให้นำบล็อกข้อความด้านซ้าย เติมลงในช่องว่างในผังงานด้านขวาให้ถูกต้องตามกระบวนการทำงาน (หมายเหตุ: บล็อกคำสั่งภายใต้เงื่อนไข จริง / ไม่จริง สามารถสลับลำดับกันได้)
+            </div>
+        </header>
+
+        <div class="workspace">
+            <div class="palette-container">
+                <div class="palette-title">📦 คลังบล็อกคำสั่ง (BLOCKS)</div>
+                <div class="palette" id="palette"></div>
+            </div>
+
+            <div class="canvas-container" id="canvas-container">
+                <canvas id="flowchart-canvas"></canvas>
+
+                <div class="slot shape-oval" id="slot-start" data-slot="start"></div>
+                <div class="diamond-wrapper" id="slot-decision" data-slot="decision">
+                    <div class="shape-diamond slot" id="diamond-shape"></div>
+                </div>
+
+                <div class="branch-container">
+                    <div class="branch-left">
+                        <div class="slot shape-rect" id="slot-true-1" data-slot="true-1"></div>
+                        <div class="slot shape-rect" id="slot-true-2" data-slot="true-2"></div>
+                    </div>
+                    <div class="branch-right">
+                        <div class="slot shape-rect" id="slot-false-1" data-slot="false-1"></div>
+                        <div class="slot shape-rect" id="slot-false-2" data-slot="false-2"></div>
+                    </div>
+                </div>
+
+                <div class="merge-circle" id="merge-circle"></div>
+                <div class="slot shape-oval" id="slot-end" data-slot="end"></div>
+            </div>
+        </div>
+
+        <div class="quiz-question-container" style="margin-top: 25px;">
+            <div class="quiz-title">💡 คำถามชวนคิดจากวิศวกรหัวหน้า:</div>
+            <div class="quiz-text">จากผังงานด้านบน หากเรานำไปเขียนเป็นรหัสคำสั่ง (Code) ในโปรแกรม Scratchเราจะต้องใช้บล็อกเงื่อนไขแบบใด?</div>
+            <div class="quiz-options">
+                <label class="quiz-option" id="label-opt1">
+                    <input type="radio" name="scratch-block" value="if_then">
+                    <span>บล็อก <strong>if...then</strong> (ถ้า... แล้ว)</span>
+                </label>
+                <label class="quiz-option" id="label-opt2">
+                    <input type="radio" name="scratch-block" value="if_then_else">
+                    <span>บล็อก <strong>if...then...else</strong> (ถ้า... แล้ว... มิฉะนั้น)</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="gsheet-modal">
+        <div class="modal-content">
+            <h3>ตั้งค่า Google Sheet Web App URL</h3>
+            <input type="url" id="gsheet-url-input" placeholder="https://script.google.com/macros/s/.../exec" style="width: 100%; padding: 10px; background: rgba(11,14,20,0.8); border:1px solid var(--accent-cyan); color:#fff; border-radius:6px; margin-top: 5px;">
+            <div style="display:flex; gap:10px; justify-content:flex-end; margin-top: 10px;">
+                <button class="secondary" onclick="closeModal('gsheet-modal')">ยกเลิก</button>
+                <button class="primary" onclick="saveGSheetURL()">บันทึก URL</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="result-modal">
+        <div class="result-card">
+            <div class="result-header">
+                <h2>🏆 ผลการทำแบบฝึกหัด 🏆</h2>
+            </div>
+            <div class="result-body">
+                <p><strong>ผู้ผจญภัย:</strong> <span id="res-name">-</span></p>
+                <p><strong>ชั้น:</strong> <span id="res-class">-</span> &nbsp;|&nbsp; <strong>เลขที่:</strong> <span id="res-roll">-</span></p>
+                <hr>
+                <div class="score-circle"><span id="res-score-text">0</span><span class="score-label" style="font-size: 18px;">/ 10</span></div>
+                <p style="color: var(--accent-cyan);">วางบล็อกถูกต้อง <span id="res-correct">0</span> จาก 7 ช่อง</p>
+            </div>
+            <div class="result-footer">
+                <button class="primary" onclick="downloadCertificate()" style="background: linear-gradient(135deg, #ff007f, #7000ff);">🎓 ดาวน์โหลดใบประกาศนียบัตร</button>
+                <button id="btn-send-gsheet" class="success" onclick="sendScoreToGSheet()">📊 ส่งคะแนนเข้า Google Sheet</button>
+                <button class="secondary" onclick="closeModal('result-modal')">ปิดหน้าต่างนี้</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Alert Modal -->
+    <div class="modal" id="alert-modal">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <h3 id="alert-title" style="margin-top:0; color: var(--gold-color);">แจ้งเตือน</h3>
+            <p id="alert-message" style="font-size: 15px; color: #fff;"></p>
+            <div style="display:flex; justify-content:center; margin-top: 10px;">
+                <button class="primary" onclick="closeModal('alert-modal')">ตกลง</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const defaultPalette = [ "เริ่มต้น", "ยานอวกาศสัมผัสดาวดวงหรือไม่", "ได้คะแนน +1", "เล่นเสียงตู้ม alien creak2", "ได้คะแนน -1", "เล่นเสียง ตึ๊ง Zoop", "สิ้นสุด", "คะแนน = 0" ];
+    let currentTemplate = { "answers": { "start": "เริ่มต้น", "decision": "ยานอวกาศสัมผัสดาวดวงหรือไม่", "true": ["ได้คะแนน +1", "เล่นเสียงตู้ม alien creak2"], "false": ["ได้คะแนน -1", "เล่นเสียง ตึ๊ง Zoop"], "end": "สิ้นสุด" } };
+    let lastEvaluationData = null;
+    let isTeacherMode = false;
+
+    const paletteEl = document.getElementById('palette');
+    const canvas = document.getElementById('flowchart-canvas');
+    const ctx = canvas.getContext('2d');
+
+    document.addEventListener('DOMContentLoaded', () => {
+        init();
+        setupButtonListeners();
+        window.addEventListener('resize', resizeCanvas);
+        // Redraw whenever the canvas box changes size (blocks wrapping, print layout, ...) and once fonts are ready.
+        if (window.ResizeObserver) new ResizeObserver(resizeCanvas).observe(document.getElementById('canvas-container'));
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(resizeCanvas);
+        window.addEventListener('beforeprint', enterPaperMode);
+        window.addEventListener('afterprint', exitPaperMode);
+    });
+
+    function init() {
+        renderPalette(defaultPalette);
+        setupDragAndDrop();
+        resizeCanvas();
+        setTimeout(resizeCanvas, 100);
+        
+        const defaultUrl = "https://script.google.com/macros/s/AKfycbzLC1zeqxdO_c8t97HBDRlEOOoxYHZ7f3GAa3BsPuU21fZ2QYaQwQkXMIW-ae8ehpE/exec";
+        const savedUrl = localStorage.getItem('gsheet_url') || defaultUrl;
+        if (savedUrl) {
+            document.getElementById('gsheet-url-input').value = savedUrl;
+        }
+    }
+
+    function renderPalette(items) {
+        paletteEl.innerHTML = '';
+        const shuffled = [...items].sort(() => 0.5 - Math.random());
+        shuffled.forEach(item => {
+            const block = document.createElement('div');
+            block.className = 'block'; 
+            block.draggable = true; 
+            block.textContent = item;
+            block.id = 'block-' + Math.random().toString(36).substr(2, 9);
+            paletteEl.appendChild(block);
+        });
+    }
+
+    function setupDragAndDrop() {
+        document.addEventListener('dragstart', (e) => {
+            if (e.target.classList.contains('block')) {
+                e.dataTransfer.setData('text/plain', e.target.id);
+            }
+        });
+
+        const targets = document.querySelectorAll('.slot, .palette');
+        targets.forEach(target => {
+            target.addEventListener('dragover', (e) => e.preventDefault());
+            target.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const id = e.dataTransfer.getData('text/plain');
+                const block = document.getElementById(id);
+                if (!block) return;
+
+                let dest = e.target;
+                if (dest.classList.contains('block')) {
+                    dest = dest.parentElement;
+                }
+
+                if (dest.classList.contains('slot')) {
+                    if (dest.children.length > 0) {
+                        const existing = dest.children[0];
+                        paletteEl.appendChild(existing);
+                    }
+                    dest.appendChild(block);
+                } else if (dest.classList.contains('palette') || dest.closest('.palette-container')) {
+                    paletteEl.appendChild(block);
+                }
+                resizeCanvas();
+            });
+        });
+    }
+
+    const printAreaEl = document.getElementById('print-area');
+    const isPaperMode = () => printAreaEl.classList.contains('pdf-export-mode');
+
+    // Size the bitmap for the real pixel density (min 2x so the PDF capture stays sharp), then redraw.
+    function resizeCanvas() {
+        const container = document.getElementById('canvas-container');
+        if (!container) return;
+        const dpr = Math.max(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.round(container.clientWidth * dpr);
+        canvas.height = Math.round(container.clientHeight * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        drawFlowchartLines();
+    }
+
+    function drawFlowchartLines() {
+        const paper = isPaperMode();
+        const theme = paper
+            ? { line: '#1a1a1a', label: '#000000', diamondFill: '#fafafa', diamondStroke: '#555555', ok: '#119955', bad: '#cc0033' }
+            : { line: '#00f0ff', label: '#00f0ff', diamondFill: 'rgba(11, 14, 20, 0.6)', diamondStroke: 'rgba(0, 240, 255, 0.5)', ok: '#00ff87', bad: '#ff0055' };
+
+        const cRect = canvas.getBoundingClientRect();
+        ctx.clearRect(0, 0, cRect.width, cRect.height);
+        ctx.lineWidth = 2;
+        ctx.lineJoin = 'round';
+
+        const getBox = (id) => {
+            const el = document.getElementById(id);
+            if (!el) return { x: 0, y: 0, top: 0, bottom: 0, left: 0, right: 0 };
+            const r = el.getBoundingClientRect();
+            return {
+                x: r.left + r.width / 2 - cRect.left,
+                y: r.top + r.height / 2 - cRect.top,
+                top: r.top - cRect.top,
+                bottom: r.bottom - cRect.top,
+                left: r.left - cRect.left,
+                right: r.right - cRect.left
+            };
+        };
+
+        // Polyline whose last segment ends in a filled arrowhead (the tip sits exactly on the last point).
+        const drawArrow = (points) => {
+            ctx.strokeStyle = ctx.fillStyle = theme.line;
+            ctx.setLineDash([]);
+            ctx.beginPath();
+            points.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
+            ctx.stroke();
+
+            const [fx, fy] = points[points.length - 2];
+            const [tx, ty] = points[points.length - 1];
+            const head = 10, spread = Math.PI / 7;
+            const ang = Math.atan2(ty - fy, tx - fx);
+            ctx.beginPath();
+            ctx.moveTo(tx, ty);
+            ctx.lineTo(tx - head * Math.cos(ang - spread), ty - head * Math.sin(ang - spread));
+            ctx.lineTo(tx - head * Math.cos(ang + spread), ty - head * Math.sin(ang + spread));
+            ctx.closePath();
+            ctx.fill();
+        };
+
+        const start = getBox('slot-start');
+        const dec = getBox('slot-decision');
+        const true1 = getBox('slot-true-1'), true2 = getBox('slot-true-2');
+        const false1 = getBox('slot-false-1'), false2 = getBox('slot-false-2');
+        const merge = getBox('merge-circle');
+        const end = getBox('slot-end');
+
+        // Decision diamond (outline follows the correct / wrong state of its slot)
+        const dState = document.getElementById('diamond-shape');
+        ctx.beginPath();
+        ctx.moveTo(dec.x, dec.top);
+        ctx.lineTo(dec.right, dec.y);
+        ctx.lineTo(dec.x, dec.bottom);
+        ctx.lineTo(dec.left, dec.y);
+        ctx.closePath();
+        ctx.fillStyle = theme.diamondFill;
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.setLineDash(dState.classList.contains('correct') || dState.classList.contains('wrong') ? [] : [6, 4]);
+        ctx.strokeStyle = dState.classList.contains('correct') ? theme.ok : dState.classList.contains('wrong') ? theme.bad : theme.diamondStroke;
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Connectors
+        drawArrow([[start.x, start.bottom], [dec.x, dec.top]]);
+        drawArrow([[dec.left, dec.y], [true1.x, dec.y], [true1.x, true1.top]]);
+        drawArrow([[dec.right, dec.y], [false1.x, dec.y], [false1.x, false1.top]]);
+        drawArrow([[true1.x, true1.bottom], [true2.x, true2.top]]);
+        drawArrow([[false1.x, false1.bottom], [false2.x, false2.top]]);
+        drawArrow([[true2.x, true2.bottom], [true2.x, merge.y], [merge.left, merge.y]]);
+        drawArrow([[false2.x, false2.bottom], [false2.x, merge.y], [merge.right, merge.y]]);
+        drawArrow([[merge.x, merge.bottom], [end.x, end.top]]);
+
+        // Branch labels, centred above their horizontal segment
+        ctx.fillStyle = theme.label;
+        ctx.font = '600 13px Sarabun, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'alphabetic';
+        ctx.fillText('จริง', (dec.left + true1.x) / 2, dec.y - 7);
+        ctx.fillText('ไม่จริง', (dec.right + false1.x) / 2, dec.y - 7);
+    }
+
+    function checkAnswers() {
+        const getSlotText = (id) => {
+            const slot = document.getElementById(id);
+            const block = slot ? slot.querySelector('.block') : null;
+            return block ? block.textContent.trim() : '';
+        };
+
+        const answers = {
+            start: getSlotText('slot-start'),
+            decision: getSlotText('diamond-shape'),
+            true1: getSlotText('slot-true-1'),
+            true2: getSlotText('slot-true-2'),
+            false1: getSlotText('slot-false-1'),
+            false2: getSlotText('slot-false-2'),
+            end: getSlotText('slot-end')
+        };
+
+        let correctCount = 0;
+        const target = currentTemplate.answers;
+
+        const checkMatch = (slotId, isCorrect) => {
+            const slot = document.getElementById(slotId);
+            if (slot) {
+                slot.classList.remove('correct', 'wrong');
+                slot.classList.add(isCorrect ? 'correct' : 'wrong');
+            }
+            if (isCorrect) correctCount++;
+        };
+
+        checkMatch('slot-start', answers.start === target.start);
+        checkMatch('diamond-shape', answers.decision === target.decision);
+        checkMatch('slot-end', answers.end === target.end);
+
+        const userTrue = [answers.true1, answers.true2];
+        const isTrueBranchOk = userTrue.every(val => target.true.includes(val)) && (userTrue[0] !== userTrue[1] || userTrue[0] === '');
+        checkMatch('slot-true-1', target.true.includes(answers.true1) && answers.true1 !== '');
+        checkMatch('slot-true-2', target.true.includes(answers.true2) && answers.true2 !== '' && answers.true2 !== answers.true1);
+
+        const userFalse = [answers.false1, answers.false2];
+        checkMatch('slot-false-1', target.false.includes(answers.false1) && answers.false1 !== '');
+        checkMatch('slot-false-2', target.false.includes(answers.false2) && answers.false2 !== '' && answers.false2 !== answers.false1);
+
+        const quizSelected = document.querySelector('input[name="scratch-block"]:checked');
+        let quizScore = 0;
+        if (quizSelected && quizSelected.value === 'if_then_else') {
+            quizScore = 3;
+        }
+
+        const flowchartScore = Math.round((correctCount / 7) * 7);
+        const totalScore = flowchartScore + quizScore;
+
+        const name = document.getElementById('student-name').value || '-';
+        const surname = document.getElementById('student-surname').value || '';
+        const sClass = document.getElementById('student-class').value || '-';
+        const roll = document.getElementById('student-roll').value || '-';
+
+        document.getElementById('res-name').textContent = `${name} ${surname}`;
+        document.getElementById('res-class').textContent = sClass;
+        document.getElementById('res-roll').textContent = roll;
+        document.getElementById('res-score-text').textContent = totalScore;
+        document.getElementById('res-correct').textContent = correctCount;
+
+        lastEvaluationData = {
+            name: `${name} ${surname}`,
+            class: sClass,
+            roll: roll,
+            score: totalScore,
+            correctSlots: correctCount
+        };
+
+        drawFlowchartLines();
+        openModal('result-modal');
+    }
+
+    function setupButtonListeners() {}
+
+    function toggleTeacherMode() {
+        isTeacherMode = !isTeacherMode;
+        showAlert('โหมดครู', isTeacherMode ? 'เปิดใช้งานโหมดครูแล้ว' : 'ปิดใช้งานโหมดครูแล้ว');
+    }
+
+    // Switch #print-area to the light A4 "paper" layout (used by both the PDF export and the print dialog).
+    function enterPaperMode() {
+        printAreaEl.classList.add('pdf-export-mode');
+        resizeCanvas();
+    }
+    function exitPaperMode() {
+        printAreaEl.classList.remove('pdf-export-mode');
+        resizeCanvas();
+    }
+
+    // html2canvas cannot find line-break points inside Thai text (no spaces), so a wrapped Thai run is drawn
+    // on ONE line and spills out of its box. While capturing, wrap every Thai word in its own <span> so each
+    // word is laid out separately (no extra characters, so no stray gaps), and hand back a function that
+    // puts the original text nodes back exactly.
+    function addThaiBreakOpportunities(root) {
+        if (!window.Intl || !Intl.Segmenter) return () => {};
+        const seg = new Intl.Segmenter('th', { granularity: 'word' });
+        const swaps = [];
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        const nodes = [];
+        for (let n = walker.nextNode(); n; n = walker.nextNode()) nodes.push(n);
+        nodes.forEach(n => {
+            const text = n.nodeValue;
+            if (!/[\u0E00-\u0E7F]/.test(text) || /^\s*$/.test(text)) return;
+            const spans = [...seg.segment(text)].map(x => {
+                const sp = document.createElement('span');
+                sp.textContent = x.segment;
+                return sp;
+            });
+            const parent = n.parentNode;
+            spans.forEach(sp => parent.insertBefore(sp, n));
+            parent.removeChild(n);
+            swaps.push([n, spans, parent]);
+        });
+        return () => swaps.forEach(([n, spans, parent]) => {
+            parent.insertBefore(n, spans[0]);
+            spans.forEach(sp => parent.removeChild(sp));
+        });
+    }
+
+    function downloadWorksheetPDF() {
+        const btn = document.getElementById('btn-pdf');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = "กำลังสร้าง PDF... ⏳";
+        btn.disabled = true;
+
+        let restoreText = () => {};
+        const finish = () => {
+            restoreText();
+            exitPaperMode();
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        };
+
+        window.scrollTo(0, 0);   // html2canvas captures at the wrong offset if the page is scrolled
+        enterPaperMode();
+        restoreText = addThaiBreakOpportunities(printAreaEl);
+
+        setTimeout(() => {
+            const opt = {
+                margin: 0,
+                filename: 'ใบงาน_ถอดรหัสผจญภัย.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', scrollX: 0, scrollY: 0, width: 794, height: 1120 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(printAreaEl).save().then(finish).catch(err => {
+                console.error(err);
+                finish();
+                showAlert('ข้อผิดพลาด', 'สร้างไฟล์ PDF ไม่สำเร็จ ลองใหม่อีกครั้ง');
+            });
+        }, 150);
+    }
+
+    function downloadCertificate() {
+        if (!lastEvaluationData) {
+            showAlert('แจ้งเตือน', 'กรุณากดตรวจคำตอบก่อนดาวน์โหลดใบประกาศนียบัตร');
+            return;
+        }
+        showAlert('ความสำเร็จ', `ออกใบประกาศนียบัตรสำหรับ ${lastEvaluationData.name} คะแนน ${lastEvaluationData.score}/10 เรียบร้อย!`);
+    }
+
+    function sendScoreToGSheet() {
+        const url = "https://script.google.com/macros/s/AKfycbzLC1zeqxdO_c8t97HBDRlEOOoxYHZ7f3GAa3BsPuU21fZ2QYaQwQkXMIW-ae8ehpE/exec";
+        if (!url) {
+            showAlert('แจ้งเตือน', 'กรุณาตั้งค่า Google Sheet Web App URL ก่อนครับ');
+            return;
+        }
+        if (!lastEvaluationData) return;
+
+        fetch(url, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(lastEvaluationData)
+        }).then(() => {
+            showAlert('สำเร็จ', 'ส่งข้อมูลคะแนนเข้า Google Sheet เรียบร้อยแล้ว!');
+        }).catch(err => {
+            showAlert('ข้อผิดพลาด', 'ไม่สามารถส่งข้อมูลได้: ' + err.message);
+        });
+    }
+
+    function openModal(id) {
+        document.getElementById(id).style.display = 'flex';
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).style.display = 'none';
+    }
+
+    function saveGSheetURL() {
+        const val = document.getElementById('gsheet-url-input').value;
+        localStorage.setItem('gsheet_url', val);
+        closeModal('gsheet-modal');
+        showAlert('สำเร็จ', 'บันทึก Web App URL เรียบร้อยแล้ว');
+    }
+
+    function showAlert(title, message) {
+        document.getElementById('alert-title').textContent = title;
+        document.getElementById('alert-message').textContent = message;
+        openModal('alert-modal');
+    }
+</script>
+</body>
+</html>
