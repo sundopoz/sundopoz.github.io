@@ -457,8 +457,11 @@
         ctx.fillStyle = theme.diamondFill;
         ctx.fill();
         ctx.lineWidth = 2;
-        ctx.setLineDash(dState.classList.contains('correct') || dState.classList.contains('wrong') ? [] : [6, 4]);
-        ctx.strokeStyle = dState.classList.contains('correct') ? theme.ok : dState.classList.contains('wrong') ? theme.bad : theme.diamondStroke;
+        // On paper the outline stays plain (like the other slots); the correct / wrong colour is for the screen only.
+        const isCorrect = !paper && dState.classList.contains('correct');
+        const isWrong = !paper && dState.classList.contains('wrong');
+        ctx.setLineDash(isCorrect || isWrong ? [] : [6, 4]);
+        ctx.strokeStyle = isCorrect ? theme.ok : isWrong ? theme.bad : theme.diamondStroke;
         ctx.stroke();
         ctx.setLineDash([]);
 
