@@ -84,6 +84,8 @@
         .shape-rect { width: 220px; min-height: 50px; margin: 5px 0; padding: 4px 0; }
         /* Text inside a slot always stays inside the slot: it wraps and the slot grows instead of overflowing */
         .slot .block { width: calc(100% - 20px); max-width: 200px; line-height: 1.3; overflow-wrap: anywhere; word-break: normal; }
+        /* A block placed in a slot has no box of its own: the slot outline is the only border (same as the diamond) */
+        .slot .block { background: transparent; border: none; box-shadow: none; }
 
         /* Decision diamond: the outline is drawn on the canvas (see drawFlowchartLines), so there is no rotated
            element. The slot is a plain, unrotated box and the text inside it wraps normally. */
