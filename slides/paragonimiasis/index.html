@@ -453,25 +453,9 @@ window.IMGS={"intro1": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDA
   window.SLIDES=[
   /* pages 1-3 of the supplied PDF, shown full-screen exactly as designed (not restyled) */
   {full:'intro1'}, {full:'intro2'}, {full:'intro3'},
-  /* 1 */ {mast:'Paragonimus', srcPlain:['รายวิชา ว33212','เลขที่ 18 · 21 · 24'],
-    hero:P('orb',1400,545,1.5,0,{orbit:1,bead:1}),
-    frames:[{l:100,r:1180,t:170,sz:'XL',st:'<i class="sp">Paragonimus</i>',tt:'โรคพยาธิใบไม้<br>ในปอด',ln:'<span class="en" style="color:var(--teal-lt)">Paragonimiasis</span>'},
-            {l:100,r:1180,below:1,sz:'S',ln:'ผู้ป่วยไอเป็นเลือดมาหลายเดือน ถูกรักษาเป็นวัณโรค',chips:[{t:'ผลตรวจวัณโรคเป็นลบ',warn:1}],ft:'เราพลาดอะไรไป?'}]},
-  /* 2 */ {mast:'โรคนี้คืออะไร', src:'MSD Manual',
-    hero:P('leaf',540,660,1.3,17,{veins:1}),
-    frames:[{l:900,r:1820,cy:470,sz:'M',st:'พยาธิชนิดหนึ่ง',tt:'หนอนพยาธิตัวแบน<br>รูปร่างคล้ายใบไม้'},
-            {l:900,r:1660,below:1,sz:'L',ln:'ตัวเต็มวัยอาศัยอยู่ใน'+tl('ปอดของคน')}]},
   /* 3 */ {mast:'โรคนี้คืออะไร', src:'MSD Manual',
     hero:P('ring',1340,545,1.5,0,{bead:1,mode:1}),
     head:{l:330,t:290,w:700,st:'พยาธิตัวเต็มวัย',tt:'อยู่ในปอดได้<br>นานถึง'}, ring:{big:'20–25',unit:'ปี'}},
-  /* 4 */ {mast:'โรคนี้คืออะไร', src:'รายงานผู้ป่วยไทย (AJTMH 2023)',
-    hero:P('leaf',470,640,.9,17,{veins:1}),
-    frames:[{l:800,r:1820,cy:470,sz:'M',st:'ชนิดหลักที่พบในประเทศไทย',tt:'<i class="sp">Paragonimus heterotremus</i>'},
-            {l:800,r:1820,below:1,sz:'M',st:'พบในประเทศไทยด้วย',tt:'<i class="sp">Paragonimus westermani</i>'}]},
-  /* 5 */ {mast:'การติดต่อ', src:'MSD Manual · WHO · รามาธิบดี',
-    hero:P('shrimp',470,560,1.15),
-    frames:[{l:860,r:1820,cy:480,sz:'M',st:'ติดจากการกิน',tt:'ปูน้ำจืด<br>และกุ้งเครย์ฟิช',ln:'ที่มีตัวอ่อน (<i class="sp">metacercariae</i>) อยู่ในตัว',chips:[{t:'ดิบ',warn:1},{t:'ดอง',warn:1},{t:'เค็ม',warn:1},{t:'รมควัน',warn:1},{t:'ปรุงไม่สุก',warn:1}]},
-            {l:860,r:1820,below:1,sz:'S',st:'เพิ่มเติมจากรามาธิบดี',tt:'กุ้งน้ำจืดที่ปรุงไม่สุก'}]},
   /* 6 */ {mast:'การติดต่อ', src:'รายงานผู้ป่วยไทย (AJTMH 2023)',
     hero:P('drop',1400,560,1.2),
     frames:[{l:100,r:1040,cy:470,sz:'M',st:'ทางอื่นที่เป็นไปได้',tt:'น้ำปูดิบเปื้อน<br>มีดหรืออาหาร',ln:'ตอนเตรียมอาหาร'},
@@ -561,7 +545,7 @@ window.IMGS={"intro1": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDA
             {l:560,r:1820,below:1,gap:20,sz:'XS',st:'รายงานผู้ป่วยไทย',ln:'Reemerging Paragonimiasis in Umphang District, Thailand. <i class="sp">Am J Trop Med Hyg.</i> 2023;108(4):738–743.'},
             {l:560,r:1820,below:1,gap:20,sz:'XS',st:'รามาธิบดี',ln:'Ramathibodi Hospital, Mahidol University. Infographic on lung fluke disease.'}]}
   ];
-  window.SLIDE_SECONDS=[0,0,0,30,15,15,10,20,15,15,90,35,25,25,15,20,0,45,35,20,15,20,20,15,20,15,10,15,40,0];   /* the 4 added slides (3 PDF pages + X-ray) have no timing; the original 26 still total 10:00 */
+  window.SLIDE_SECONDS=[0,0,0,15,15,15,90,35,25,25,15,20,0,45,35,20,15,20,20,15,20,15,10,15,40,0];   /* the 4 added slides (3 PDF pages + X-ray) have no timing; the original 26 still total 10:00 */
 })();
 
 /* ===== DECK ENGINE =====
