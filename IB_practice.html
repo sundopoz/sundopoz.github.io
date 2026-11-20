@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Campbell IB Practice</title>
+<style>
+:root{
+  --bg:#f6f7f4; --card:#ffffff; --ink:#1d2421; --muted:#5d6a64; --line:#d9dfda;
+  --accent:#1f7a5a; --accent-ink:#ffffff; --accent-soft:#e1f1ea;
+  --good:#1b7f45; --good-bg:#dff3e6; --bad:#b3261e; --bad-bg:#fbe3e0; --sel:#fff2c2; --sel-line:#c79a00;
+  --chip:#eef1ee; --shadow:0 1px 3px rgba(0,0,0,.08);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#141a17; --card:#1d2622; --ink:#e8eee9; --muted:#9fb0a6; --line:#34423b;
+    --accent:#4cc29a; --accent-ink:#06261b; --accent-soft:#1f3a30;
+    --good:#6fdc9b; --good-bg:#16382a; --bad:#ff8a80; --bad-bg:#432220; --sel:#4a4015; --sel-line:#e0b92e;
+    --chip:#2a3631; --shadow:none;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:16px}
+h1{font-size:1.5rem;margin:8px 0 2px}
+h2{font-size:1.1rem;margin:0 0 8px}
+.sub{color:var(--muted);margin:0 0 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:8px 14px}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+button.primary:disabled{opacity:.45;cursor:not-allowed}
+button.small{padding:3px 9px;font-size:.85rem}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:28px 16px;text-align:center;color:var(--muted);transition:.15s}
+.drop.over{border-color:var(--accent);background:var(--accent-soft);color:var(--ink)}
+.drop b{color:var(--ink)}
+.files{list-style:none;margin:10px 0 0;padding:0}
+.files li{display:flex;gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.files .name{font-weight:600;word-break:break-all}
+.files .meta{color:var(--muted);font-size:.9rem;flex:1}
+.err{color:var(--bad);font-size:.85rem;margin:4px 0 0 0;white-space:pre-wrap}
+.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.filters label{display:flex;gap:6px;align-items:flex-start;padding:2px 0}
+.filters fieldset{border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:0}
+.filters legend{font-weight:600;padding:0 6px}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+input[type=number]{font:inherit;width:90px;padding:6px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.badge{font-size:.75rem;padding:2px 8px;border-radius:999px;background:var(--chip);color:var(--muted)}
+.badge.type{background:var(--accent-soft);color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+.bar{height:6px;background:var(--chip);border-radius:3px;overflow:hidden;margin:6px 0 14px}
+.bar>div{height:100%;background:var(--accent);transition:width .2s}
+.qtext{font-size:1.15rem;margin:0 0 14px;white-space:pre-wrap}
+.choices{display:flex;flex-direction:column;gap:8px}
+.choice{text-align:left;display:flex;gap:10px;padding:10px 12px}
+.choice .l{font-weight:700;color:var(--accent);min-width:1.4em}
+.choice.right{background:var(--good-bg);border-color:var(--good)}
+.choice.wrong{background:var(--bad-bg);border-color:var(--bad)}
+.tf{display:flex;gap:10px}
+.tf button{flex:1;font-size:1.1rem;padding:14px}
+.fb{margin-top:14px;padding:12px;border-radius:8px;border-left:5px solid}
+.fb.ok{background:var(--good-bg);border-color:var(--good)}
+.fb.no{background:var(--bad-bg);border-color:var(--bad)}
+.fb.info{background:var(--chip);border-color:var(--muted)}
+.fb b.h{display:block;margin-bottom:4px}
+.fb p{margin:4px 0;white-space:pre-wrap}
+.sentence{line-height:2.4;font-size:1.1rem;white-space:pre-wrap}
+.slot{display:inline-flex;align-items:center;min-width:110px;min-height:34px;padding:2px 4px;margin:0 2px;border:2px dashed var(--line);border-radius:8px;vertical-align:middle;line-height:1.3;background:var(--card);cursor:pointer}
+.slot.over{border-color:var(--accent);background:var(--accent-soft)}
+.slot.filled{border-style:solid}
+.slot.right{border-color:var(--good);background:var(--good-bg)}
+.slot.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.bank{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;padding:10px;min-height:52px;border:1px dashed var(--line);border-radius:8px;background:var(--bg)}
+.bank.over{border-color:var(--accent)}
+.chip{display:inline-block;padding:4px 10px;border-radius:8px;background:var(--chip);border:1px solid var(--line);cursor:grab;user-select:none;line-height:1.3}
+.chip.sel{background:var(--sel);border-color:var(--sel-line);box-shadow:0 0 0 2px var(--sel-line)}
+.hint{color:var(--muted);font-size:.85rem;margin-top:6px}
+.pairs{display:flex;flex-direction:column;gap:10px}
+.pair{display:grid;grid-template-columns:minmax(120px,1fr) 2fr;gap:10px;align-items:center}
+.pair .term{font-weight:600}
+.pair .slot{display:flex;width:100%}
+.ordl{display:flex;flex-direction:column;gap:8px}
+.ordl .ord{display:flex;gap:8px;align-items:center}
+.ordl .n{font-weight:700;color:var(--accent);min-width:1.6em;text-align:right}
+.ordl .slot{display:flex;flex:1}
+.actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.score{font-size:2.4rem;font-weight:800;color:var(--accent)}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{text-align:left;padding:5px 8px;border-bottom:1px solid var(--line)}
+.missed{border-top:1px solid var(--line);padding:10px 0}
+.missed .q{font-weight:600;white-space:pre-wrap}
+.missed .a{color:var(--good);white-space:pre-wrap}
+details summary{cursor:pointer;color:var(--accent);font-weight:600}
+code,pre{font-family:ui-monospace,Consolas,monospace;font-size:.85rem}
+pre{background:var(--chip);padding:10px;border-radius:8px;overflow:auto}
+.hidden{display:none!important}
+@media (max-width:560px){.pair{grid-template-columns:1fr}.slot{min-width:80px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Campbell Biology / IB practice</h1>
+  <p class="sub">Load one or more problem CSV files, pick the styles you want, then practise. Everything runs in your browser.</p>
+
+  <!-- SETUP -->
+  <section id="setup">
+    <div class="card">
+      <div id="drop" class="drop" tabindex="0">
+        <p><b>Drop CSV files here</b> or click to choose</p>
+        <p>You can load many files at once and mix them.</p>
+        <input id="picker" type="file" accept=".csv,.txt,text/csv" multiple class="hidden">
+      </div>
+      <ul id="files" class="files"></ul>
+    </div>
+
+    <div id="config" class="card hidden">
+      <h2>Choose problems</h2>
+      <div class="filters">
+        <fieldset id="f-type"><legend>Style</legend></fieldset>
+        <fieldset id="f-topic"><legend>Topic</legend></fieldset>
+        <fieldset id="f-level"><legend>Level</legend></fieldset>
+        <fieldset id="f-diff"><legend>Difficulty</legend></fieldset>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <label>Number of problems <input id="count" type="number" min="1" value="20"></label>
+        <button id="all" class="small" type="button">All matching</button>
+        <label><input id="shuf" type="checkbox" checked> Shuffle order</label>
+        <span id="avail" class="sub" style="margin:0"></span>
+      </div>
+      <div class="actions"><button id="start" class="primary" type="button">Start practice</button></div>
+    </div>
+
+    <div class="card">
+      <details>
+        <summary>CSV format and template</summary>
+        <p>Columns: <code>id,type,topic,chapter,level,difficulty,question,options,answer,explanation</code>. Put several items in <code>options</code> by separating them with <code>|</code>. Only <code>type</code> and <code>question</code> are required.</p>
+        <div style="overflow-x:auto"><table>
+          <tr><th>type</th><th>question</th><th>options</th><th>answer</th></tr>
+          <tr><td><code>qa</code></td><td>Question</td><td>-</td><td>Answer text (flashcard)</td></tr>
+          <tr><td><code>tf</code></td><td>A statement</td><td>-</td><td>TRUE or FALSE</td></tr>
+          <tr><td><code>mcq</code></td><td>Question</td><td>choices</td><td>letter of correct choice (A, B...)</td></tr>
+          <tr><td><code>find_false</code></td><td>Stem, e.g. "Which part is FALSE?"</td><td>the parts</td><td>letter of the FALSE part</td></tr>
+          <tr><td><code>fill_drag</code></td><td>Sentence with <code>___</code> for each blank</td><td>extra wrong words</td><td>correct words in order, separated by <code>|</code></td></tr>
+          <tr><td><code>match</code></td><td>Instruction</td><td><code>term::definition</code> pairs</td><td>(empty)</td></tr>
+          <tr><td><code>order</code></td><td>Instruction</td><td>steps in the CORRECT order</td><td>(empty)</td></tr>
+        </table></div>
+        <p class="hint">Do not write "option A" in explanations: choices are shuffled when you practise.</p>
+        <div class="actions"><button id="tpl" class="small" type="button">Download template.csv</button></div>
+      </details>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz" class="hidden">
+    <div class="row" style="justify-content:space-between">
+      <span id="prog"></span>
+      <button id="quit" class="small" type="button">End session</button>
+    </div>
+    <div class="bar"><div id="barfill" style="width:0"></div></div>
+    <div class="card" id="qcard"></div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="results" class="hidden"></section>
+</div>
+
+<script>
+"use strict";
+/* ---------- helpers ---------- */
+const $ = (s, r=document) => r.querySelector(s);
+function h(tag, attrs, ...kids){
+  const el = document.createElement(tag);
+  if (attrs) for (const k in attrs){
+    if (k === 'class') el.className = attrs[k];
+    else if (k.startsWith('on')) el.addEventListener(k.slice(2), attrs[k]);
+    else el.setAttribute(k, attrs[k]);
+  }
+  for (const c of kids.flat()) if (c != null) el.append(c.nodeType ? c : document.createTextNode(String(c)));
+  return el;
+}
+function shuffle(a){ a = a.slice(); for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+const LETTERS = 'ABCDEFGHIJKLMNOP';
+
+/* ---------- CSV parsing ---------- */
+function detectDelimiter(text){
+  const first = text.split(/\r?\n/, 1)[0] || '';
+  const c = (first.match(/,/g)||[]).length, s = (first.match(/;/g)||[]).length, t = (first.match(/\t/g)||[]).length;
+  if (t > c && t > s) return '\t';
+  return s > c ? ';' : ',';
+}
+function parseCSV(text){
+  if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+  const D = detectDelimiter(text);
+  const rows = []; let row = [], field = '', inQ = false, line = 1, start = 1, wasQuoted = false;
+  const push = () => { row.push(field); field = ''; wasQuoted = false; };
+  for (let i=0, n=text.length; i<n; i++){
+    const c = text[i];
+    if (inQ){
+      if (c === '"'){ if (text[i+1] === '"'){ field += '"'; i++; } else inQ = false; }
+      else { if (c === '\n') line++; field += c; }
+    } else if (c === '"' && field === '' && !wasQuoted){ inQ = true; wasQuoted = true; }
+    else if (c === D){ push(); }
+    else if (c === '\n' || c === '\r'){
+      if (c === '\r' && text[i+1] === '\n') i++;
+      push();
+      if (!(row.length === 1 && row[0].trim() === '')) rows.push({cells: row, line: start});
+      row = []; line++; start = line;
+    } else field += c;
+  }
+  if (field !== '' || row.length){ push(); if (!(row.length === 1 && row[0].trim() === '')) rows.push({cells: row, line: start}); }
+  return {rows, unterminated: inQ};
+}
+
+/* ---------- problems ---------- */
+const TYPE_ALIAS = {
+  qa:'qa', flashcard:'qa', short:'qa', question_answer:'qa', q_a:'qa',
+  tf:'tf', true_false:'tf', truefalse:'tf',
+  mcq:'mcq', multiple_choice:'mcq', choice:'mcq',
+  find_false:'find_false', which_false:'find_false', false_part:'find_false', findfalse:'find_false',
+  fill_drag:'fill_drag', fill:'fill_drag', drag:'fill_drag', fill_in:'fill_drag', cloze:'fill_drag',
+  match:'match', matching:'match',
+  order:'order', sequence:'order', ordering:'order'
+};
+const TYPE_LABEL = {qa:'Q & A', tf:'True / False', mcq:'Multiple choice', find_false:'Find the false part', fill_drag:'Fill in (drag words)', match:'Match', order:'Put in order'};
+const TYPE_ORDER = ['qa','tf','mcq','find_false','fill_drag','match','order'];
+
+function buildProblem(rec, fileName){
+  const p = { file:fileName, line:rec.line };
+  for (const k of ['id','type','topic','chapter','level','difficulty','question','options','answer','explanation']) p[k] = (rec[k] || '').trim();
+  const t = p.type.toLowerCase().replace(/[\s-]+/g, '_');
+  p.type = TYPE_ALIAS[t];
+  if (!p.type) return {err:`unknown type "${rec.type||''}"`};
+  if (!p.question) return {err:'empty question'};
+  p.options = p.options ? p.options.split('|').map(s => s.trim()).filter(s => s !== '') : [];
+  p.level = p.level.toUpperCase();
+  p.difficulty = p.difficulty || '';
+  p.topic = p.topic || fileName.replace(/\.[^.]+$/, '');
+  switch (p.type){
+    case 'qa':
+      if (!p.answer) return {err:'qa needs an answer'};
+      break;
+    case 'tf': {
+      const a = p.answer.toUpperCase();
+      if (a === 'TRUE' || a === 'T') p.truth = true;
+      else if (a === 'FALSE' || a === 'F') p.truth = false;
+      else return {err:'tf answer must be TRUE or FALSE'};
+      break; }
+    case 'mcq': case 'find_false': {
+      if (p.options.length < 2) return {err:`${p.type} needs at least 2 options`};
+      const i = LETTERS.indexOf(p.answer.toUpperCase());
+      if (p.answer.length !== 1 || i < 0 || i >= p.options.length) return {err:`answer "${p.answer}" is not a valid letter for ${p.options.length} options`};
+      p.ansIdx = i;
+      break; }
+    case 'fill_drag': {
+      const blanks = p.question.split('___').length - 1;
+      p.words = p.answer.split('|').map(s => s.trim());
+      if (blanks < 1) return {err:'fill_drag question needs at least one ___ blank'};
+      if (p.words.length !== blanks || p.words.some(w => !w)) return {err:`${blanks} blank(s) but ${p.words.length} answer word(s)`};
+      break; }
+    case 'match': {
+      if (p.options.length < 2) return {err:'match needs at least 2 term::definition pairs'};
+      p.pairs = [];
+      for (const o of p.options){
+        const k = o.indexOf('::');
+        if (k < 1 || k === o.length-2) return {err:`match pair "${o}" must look like term::definition`};
+        p.pairs.push([o.slice(0,k).trim(), o.slice(k+2).trim()]);
+      }
+      break; }
+    case 'order':
+      if (p.options.length < 2) return {err:'order needs at least 2 steps'};
+      break;
+  }
+  return {p};
+}
+
+function parseProblemFile(name, text){
+  const {rows, unterminated} = parseCSV(text);
+  const out = {name, problems:[], errors:[]};
+  if (unterminated) out.errors.push('A quoted field is never closed (missing ") - rows after it may be wrong.');
+  if (!rows.length){ out.errors.push('File is empty.'); return out; }
+  const head = rows[0].cells.map(s => s.trim().toLowerCase());
+  const col = {}; head.forEach((c,i) => { if (!(c in col)) col[c] = i; });
+  if (!('type' in col) || !('question' in col)){ out.errors.push('Header row must contain at least the columns "type" and "question".'); return out; }
+  for (const r of rows.slice(1)){
+    const rec = {};
+    for (const k in col) rec[k] = r.cells[col[k]] ?? '';
+    rec.line = r.line;
+    const res = buildProblem(rec, name);
+    if (res.err) out.errors.push(`line ${r.line}: ${res.err}`);
+    else out.problems.push(res.p);
+  }
+  return out;
+}
+
+/* ---------- state ---------- */
+let loaded = [];          // [{name, problems, errors}]
+let session = null;
+
+/* ---------- file loading ---------- */
+const drop = $('#drop'), picker = $('#picker');
+drop.addEventListener('click', () => picker.click());
+drop.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); picker.click(); } });
+picker.addEventListener('change', () => { addFiles(picker.files); picker.value = ''; });
+['dragenter','dragover'].forEach(ev => document.addEventListener(ev, e => {
+  if (e.dataTransfer && [...e.dataTransfer.types].includes('Files')){ e.preventDefault(); drop.classList.add('over'); }
+}));
+['dragleave','drop'].forEach(ev => document.addEventListener(ev, e => {
+  if (e.dataTransfer && [...e.dataTransfer.types].includes('Files')){ e.preventDefault(); if (ev === 'drop' || e.target === document.documentElement || e.target === drop) drop.classList.remove('over'); }
+}));
+document.addEventListener('drop', e => { if (e.dataTransfer && e.dataTransfer.files.length) addFiles(e.dataTransfer.files); });
+
+async function addFiles(list){
+  for (const f of [...list]){
+    let text;
+    try { text = await f.text(); } catch (err){ loaded = loaded.filter(x => x.name !== f.name); loaded.push({name:f.name, problems:[], errors:['Could not read file.']}); continue; }
+    const res = parseProblemFile(f.name, text);
+    loaded = loaded.filter(x => x.name !== f.name);
+    loaded.push(res);
+  }
+  refreshSetup();
+}
+
+function allProblems(){ return loaded.flatMap(f => f.problems); }
+
+/* ---------- setup screen ---------- */
+function refreshSetup(){
+  const ul = $('#files'); ul.textContent = '';
+  for (const f of loaded){
+    const li = h('li', null,
+      h('span', {class:'name'}, f.name),
+      h('span', {class:'meta'}, `${f.problems.length} problem${f.problems.length===1?'':'s'}` + (f.errors.length ? `, ${f.errors.length} problem row${f.errors.length===1?'':'s'} skipped` : '')),
+      h('button', {class:'small', type:'button', onclick:() => { loaded = loaded.filter(x => x !== f); refreshSetup(); }}, 'Remove'));
+    if (f.errors.length){
+      const shown = f.errors.slice(0, 8).join('\n') + (f.errors.length > 8 ? `\n...and ${f.errors.length-8} more` : '');
+      li.append(h('div', {class:'err', style:'flex-basis:100%'}, shown));
+    }
+    ul.append(li);
+  }
+  const probs = allProblems();
+  $('#config').classList.toggle('hidden', probs.length === 0);
+  if (!probs.length) return;
+  const keep = readFilters(true);
+  fillFilter('f-type', 'type', TYPE_ORDER.filter(t => probs.some(p => p.type === t)).map(t => [t, TYPE_LABEL[t]]), probs, p => p.type, keep);
+  const topics = [...new Set(probs.map(p => p.topic))].sort((a,b) => a.localeCompare(b, undefined, {numeric:true}));
+  fillFilter('f-topic', 'topic', topics.map(t => [t, t]), probs, p => p.topic, keep);
+  const levels = [...new Set(probs.map(p => p.level))].sort();
+  fillFilter('f-level', 'level', levels.map(l => [l, l || '(not set)']), probs, p => p.level, keep);
+  const diffs = [...new Set(probs.map(p => p.difficulty))].sort();
+  fillFilter('f-diff', 'diff', diffs.map(d => [d, d ? ({'1':'1 - easy','2':'2 - medium','3':'3 - hard'}[d] || d) : '(not set)']), probs, p => p.difficulty, keep);
+  updateAvail();
+}
+function fillFilter(id, name, items, probs, get, keep){
+  const fs = $('#'+id); [...fs.querySelectorAll('label')].forEach(l => l.remove());
+  for (const [val, label] of items){
+    const n = probs.filter(p => get(p) === val).length;
+    const cb = h('input', {type:'checkbox', 'data-f':name, value:val});
+    cb.checked = !keep || !keep[name] || keep[name].has(val) || !keep.known[name].has(val);
+    cb.addEventListener('change', updateAvail);
+    fs.append(h('label', null, cb, h('span', null, `${label} `, h('span', {class:'badge'}, n))));
+  }
+}
+function readFilters(forKeep){
+  const f = {type:new Set(), topic:new Set(), level:new Set(), diff:new Set(), known:{type:new Set(), topic:new Set(), level:new Set(), diff:new Set()}};
+  document.querySelectorAll('#config input[data-f]').forEach(cb => {
+    f.known[cb.dataset.f].add(cb.value);
+    if (cb.checked) f[cb.dataset.f].add(cb.value);
+  });
+  if (forKeep && !document.querySelector('#config input[data-f]')) return null;
+  return f;
+}
+function matching(){
+  const f = readFilters(false);
+  return allProblems().filter(p => f.type.has(p.type) && f.topic.has(p.topic) && f.level.has(p.level) && f.diff.has(p.difficulty));
+}
+function updateAvail(){
+  const n = matching().length;
+  $('#avail').textContent = `${n} problem${n===1?'':'s'} match`;
+  $('#count').max = n;
+  $('#start').disabled = n === 0;
+}
+$('#all').addEventListener('click', () => { $('#count').value = matching().length; });
+$('#count').addEventListener('blur', () => { const n = matching().length, v = parseInt($('#count').value, 10); if (n && (isNaN(v) || v > n)) $('#count').value = n; if (v < 1) $('#count').value = 1; });
+$('#start').addEventListener('click', () => {
+  let list = matching();
+  if ($('#shuf').checked) list = shuffle(list);
+  const n = Math.max(1, Math.min(list.length, parseInt($('#count').value, 10) || 20));
+  startSession(list.slice(0, n));
+});
+
+const TEMPLATE = [
+  'id,type,topic,chapter,level,difficulty,question,options,answer,explanation',
+  'ex1,qa,A1.1 Water,3,SL,1,What property of water lets it travel up a tree against gravity?,,Cohesion (and adhesion) of water molecules through hydrogen bonding,Hydrogen bonds hold water molecules together.',
+  'ex2,tf,A1.1 Water,3,SL,1,Water is a nonpolar molecule.,,FALSE,Water is polar because oxygen is more electronegative than hydrogen.',
+  'ex3,mcq,A1.1 Water,3,SL,1,Which bond holds neighbouring water molecules together?,Ionic bond|Hydrogen bond|Peptide bond|Glycosidic bond,B,Hydrogen bonds form between the partial charges of water molecules.',
+  'ex4,find_false,A1.1 Water,3,SL,2,Which statement about water is FALSE?,Water is a good solvent for ions|Water has a high specific heat|Water is less dense as a liquid than as ice|Water molecules are polar,C,Ice is less dense than liquid water so it floats.',
+  'ex5,fill_drag,A1.2 Nucleic acids,5,SL,1,DNA is made of ___ joined by ___ bonds.,protein|ribose,nucleotides|phosphodiester,Nucleotides are linked by phosphodiester bonds.',
+  'ex6,match,A1.2 Nucleic acids,5,SL,1,Match each term to its description.,Nucleotide::Monomer of a nucleic acid|Gene::Unit of inheritance that codes for a product|Purine::Base with a double-ring structure,,',
+  'ex7,order,A1.2 Nucleic acids,16,SL,2,Put the steps of making a new DNA strand in order.,Helicase unwinds the double helix|Primase adds an RNA primer|DNA polymerase adds nucleotides|Ligase seals the gaps,,'
+].join('\n') + '\n';
+$('#tpl').addEventListener('click', () => {
+  const url = URL.createObjectURL(new Blob(['﻿' + TEMPLATE], {type:'text/csv'}));
+  const a = h('a', {href:url, download:'template.csv'}); document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
+
+/* ---------- screens ---------- */
+function show(id){ for (const s of ['setup','quiz','results']) $('#'+s).classList.toggle('hidden', s !== id); window.scrollTo(0,0); }
+
+/* ---------- session ---------- */
+function startSession(list){
+  session = {list, i:0, answered:0, correct:0, missed:[], byType:{}, byTopic:{}};
+  show('quiz'); renderQuestion();
+}
+$('#quit').addEventListener('click', () => { if (session && session.answered > 0) showResults(); else show('setup'); });
+
+function renderQuestion(){
+  const p = session.list[session.i], n = session.list.length;
+  $('#prog').textContent = `Problem ${session.i+1} of ${n}  -  score ${session.correct}`;
+  $('#barfill').style.width = (session.i / n * 100) + '%';
+  const card = $('#qcard'); card.textContent = '';
+  const badges = h('div', {class:'badges'}, h('span', {class:'badge type'}, TYPE_LABEL[p.type]));
+  if (p.topic) badges.append(h('span', {class:'badge'}, p.topic));
+  if (p.chapter) badges.append(h('span', {class:'badge'}, 'Campbell ch. ' + p.chapter));
+  if (p.level) badges.append(h('span', {class:'badge'}, p.level));
+  if (p.difficulty) badges.append(h('span', {class:'badge'}, 'difficulty ' + p.difficulty));
+  card.append(badges);
+  const body = h('div'); const fbBox = h('div', {'aria-live':'polite'});
+  const done = (ok, detail) => finishQuestion(p, ok, detail, fbBox, body);
+  RENDER[p.type](p, body, done, card);
+  card.append(body, fbBox);
+}
+
+function finishQuestion(p, ok, detail, fbBox, body){
+  if (fbBox.firstChild) return;
+  session.answered++;
+  if (ok){ session.correct++; } else { session.missed.push(p); }
+  for (const [map, key] of [[session.byType, p.type],[session.byTopic, p.topic]]){
+    map[key] = map[key] || {right:0, total:0}; map[key].total++; if (ok) map[key].right++;
+  }
+  $('#prog').textContent = `Problem ${session.i+1} of ${session.list.length}  -  score ${session.correct}`;
+  const fb = h('div', {class:'fb ' + (ok ? 'ok' : 'no')}, h('b', {class:'h'}, ok ? 'Correct' : 'Not quite'));
+  if (detail) fb.append(...[].concat(detail));
+  if (p.explanation) fb.append(h('p', null, p.explanation));
+  const last = session.i === session.list.length - 1;
+  const next = h('button', {class:'primary', type:'button', onclick:() => { session.i++; if (session.i >= session.list.length) showResults(); else renderQuestion(); }}, last ? 'See results' : 'Next');
+  fbBox.append(fb, h('div', {class:'actions'}, next));
+  next.focus({preventScroll:true});
+}
+
+function answerLines(p){
+  switch (p.type){
+    case 'qa': return [p.answer];
+    case 'tf': return [p.truth ? 'TRUE' : 'FALSE'];
+    case 'mcq': return [p.options[p.ansIdx]];
+    case 'find_false': return ['False part: ' + p.options[p.ansIdx]];
+    case 'fill_drag': return [p.question.split('___').map((s,i) => i < p.words.length ? s + '[' + p.words[i] + ']' : s).join('')];
+    case 'match': return p.pairs.map(x => x[0] + '  ->  ' + x[1]);
+    case 'order': return p.options.map((s,i) => (i+1) + '. ' + s);
+  }
+  return [];
+}
+function lines(arr){ return arr.map(t => h('p', null, t)); }
+
+/* ---------- renderers ---------- */
+const RENDER = {};
+
+RENDER.qa = (p, body, done) => {
+  body.append(h('p', {class:'qtext'}, p.question));
+  const reveal = h('button', {class:'primary', type:'button'}, 'Show answer');
+  const area = h('div', null, reveal);
+  reveal.addEventListener('click', () => {
+    area.textContent = '';
+    area.append(h('div', {class:'fb info'}, h('b', {class:'h'}, 'Answer'), lines(answerLines(p))),
+      h('p', {class:'hint'}, 'Did you know it?'),
+      h('div', {class:'actions'},
+        h('button', {class:'primary', type:'button', onclick:() => { area.remove(); done(true); }}, 'I knew it'),
+        h('button', {type:'button', onclick:() => { area.remove(); done(false, lines(['Answer: ' + p.answer])); }}, 'Not yet')));
+  });
+  body.append(area);
+};
+
+RENDER.tf = (p, body, done) => {
+  body.append(h('p', {class:'qtext'}, p.question));
+  const bt = h('button', {type:'button'}, 'True'), bf = h('button', {type:'button'}, 'False');
+  const go = val => {
+    bt.disabled = bf.disabled = true;
+    const ok = val === p.truth;
+    (p.truth ? bt : bf).classList.add('right'); if (!ok) (val ? bt : bf).classList.add('wrong');
+    done(ok, ok ? null : h('p', null, 'The statement is ' + (p.truth ? 'TRUE.' : 'FALSE.')));
+  };
+  bt.addEventListener('click', () => go(true)); bf.addEventListener('click', () => go(false));
+  body.append(h('div', {class:'tf'}, bt, bf));
+};
+
+function renderChoice(p, body, done, intro){
+  body.append(h('p', {class:'qtext'}, p.question));
+  if (intro) body.append(h('p', {class:'hint', style:'margin-top:-8px'}, intro));
+  let items = p.options.map((t,i) => ({t, ok:i === p.ansIdx}));
+  const pinRe = /\b(all|none) of the (above|these)\b/i;
+  if (!/\bboth\b|\bneither\b/i.test(p.options.join(' | '))){
+    const pinned = items.filter(it => pinRe.test(it.t));
+    items = shuffle(items.filter(it => !pinRe.test(it.t))).concat(pinned);
+  }
+  const wrap = h('div', {class:'choices'}); const btns = [];
+  items.forEach((it, i) => {
+    const b = h('button', {class:'choice', type:'button'}, h('span', {class:'l'}, LETTERS[i]), h('span', null, it.t));
+    b.addEventListener('click', () => {
+      btns.forEach((x, j) => { x.disabled = true; if (items[j].ok) x.classList.add('right'); });
+      if (!it.ok) b.classList.add('wrong');
+      done(it.ok, it.ok ? null : h('p', null, 'Correct answer: ' + items.find(x => x.ok).t));
+    });
+    btns.push(b); wrap.append(b);
+  });
+  body.append(wrap);
+}
+RENDER.mcq = (p, body, done) => renderChoice(p, body, done, null);
+RENDER.find_false = (p, body, done) => renderChoice(p, body, done, 'Pick the part that is FALSE.');
+
+/* ----- slot / chip engine (drag-and-drop with tap-to-place fallback) ----- */
+function makeEngine(slotCount, chipTexts, bankLabel){
+  const chips = shuffle(chipTexts.map((t,i) => ({id:i, t})));
+  const slotOf = new Array(slotCount).fill(null);
+  const slotEls = Array.from({length:slotCount}, () => h('span', {class:'slot'}));
+  const bank = h('div', {class:'bank'});
+  let sel = null, locked = false;
+  const place = (i, id) => {
+    const from = slotOf.indexOf(id), occ = slotOf[i];
+    if (from >= 0) slotOf[from] = occ;
+    slotOf[i] = id;
+  };
+  const unplace = id => { const k = slotOf.indexOf(id); if (k >= 0) slotOf[k] = null; };
+  const chipEl = (c, inBank) => {
+    const el = h('span', {class:'chip' + (sel === c.id ? ' sel' : ''), draggable: locked ? 'false' : 'true'}, c.t);
+    el.addEventListener('dragstart', e => { if (locked){ e.preventDefault(); return; } e.dataTransfer.setData('text/plain', String(c.id)); e.dataTransfer.effectAllowed = 'move'; });
+    if (inBank) el.addEventListener('click', () => { if (locked) return; sel = (sel === c.id ? null : c.id); render(); });
+    return el;
+  };
+  function render(){
+    slotEls.forEach((s, i) => {
+      s.textContent = ''; const id = slotOf[i];
+      if (id !== null) s.append(chipEl(chips.find(c => c.id === id), false));
+      s.classList.toggle('filled', id !== null);
+    });
+    bank.textContent = '';
+    chips.forEach(c => { if (!slotOf.includes(c.id)) bank.append(chipEl(c, true)); });
+    if (!bank.firstChild) bank.append(h('span', {class:'hint'}, 'All placed. Tap a placed item to take it back.'));
+  }
+  slotEls.forEach((s, i) => {
+    s.addEventListener('click', () => {
+      if (locked) return;
+      if (sel !== null){ place(i, sel); sel = null; }
+      else if (slotOf[i] !== null) slotOf[i] = null;
+      render();
+    });
+    s.addEventListener('dragover', e => { if (!locked){ e.preventDefault(); s.classList.add('over'); } });
+    s.addEventListener('dragleave', () => s.classList.remove('over'));
+    s.addEventListener('drop', e => {
+      e.preventDefault(); e.stopPropagation(); s.classList.remove('over'); if (locked) return;
+      const id = parseInt(e.dataTransfer.getData('text/plain'), 10); if (isNaN(id)) return;
+      place(i, id); sel = null; render();
+    });
+  });
+  bank.addEventListener('dragover', e => { if (!locked){ e.preventDefault(); bank.classList.add('over'); } });
+  bank.addEventListener('dragleave', () => bank.classList.remove('over'));
+  bank.addEventListener('drop', e => {
+    e.preventDefault(); bank.classList.remove('over'); if (locked) return;
+    const id = parseInt(e.dataTransfer.getData('text/plain'), 10); if (isNaN(id)) return;
+    unplace(id); sel = null; render();
+  });
+  render();
+  return {
+    slotEls, bank,
+    values: () => slotOf.map(id => id === null ? null : chips.find(c => c.id === id).t),
+    lock(flags){ locked = true; sel = null; flags.forEach((ok, i) => slotEls[i].classList.add(ok ? 'right' : 'wrong')); render(); bank.remove(); },
+    hint: h('p', {class:'hint'}, bankLabel)
+  };
+}
+function checkRow(eng, test, done, detailFn, p){
+  const check = h('button', {class:'primary', type:'button'}, 'Check');
+  check.addEventListener('click', () => {
+    const vals = eng.values();
+    const flags = vals.map((v, i) => v !== null && test(v, i));
+    eng.lock(flags); check.remove(); eng.hint.remove();
+    const ok = flags.every(Boolean);
+    done(ok, ok ? null : detailFn());
+  });
+  return h('div', {class:'actions'}, check);
+}
+
+RENDER.fill_drag = (p, body, done) => {
+  const parts = p.question.split('___');
+  const blanks = parts.length - 1;
+  const eng = makeEngine(blanks, p.words.concat(p.options), 'Drag a word into a blank, or tap a word and then tap a blank. Tap a filled blank to remove its word.');
+  const s = h('div', {class:'sentence'});
+  parts.forEach((t, i) => { s.append(t); if (i < blanks) s.append(eng.slotEls[i]); });
+  body.append(s, eng.bank, eng.hint);
+  body.append(checkRow(eng, (v, i) => v.toLowerCase() === p.words[i].toLowerCase(), done, () => lines(['Correct sentence: ' + answerLines(p)[0]]), p));
+};
+
+RENDER.match = (p, body, done) => {
+  body.append(h('p', {class:'qtext'}, p.question));
+  const eng = makeEngine(p.pairs.length, p.pairs.map(x => x[1]), 'Drag each definition onto its term, or tap a definition and then tap a term row.');
+  const list = h('div', {class:'pairs'});
+  p.pairs.forEach((pr, i) => list.append(h('div', {class:'pair'}, h('span', {class:'term'}, pr[0]), eng.slotEls[i])));
+  body.append(list, eng.bank, eng.hint);
+  body.append(checkRow(eng, (v, i) => v === p.pairs[i][1], done, () => lines(['Correct matches:'].concat(answerLines(p))), p));
+};
+
+RENDER.order = (p, body, done) => {
+  body.append(h('p', {class:'qtext'}, p.question));
+  const eng = makeEngine(p.options.length, p.options, 'Drag the steps into order (1 = first), or tap a step and then tap a position.');
+  const list = h('div', {class:'ordl'});
+  p.options.forEach((_, i) => list.append(h('div', {class:'ord'}, h('span', {class:'n'}, (i+1) + '.'), eng.slotEls[i])));
+  body.append(list, eng.bank, eng.hint);
+  body.append(checkRow(eng, (v, i) => v === p.options[i], done, () => lines(['Correct order:'].concat(answerLines(p))), p));
+};
+
+/* ---------- results ---------- */
+function showResults(){
+  const n = session.answered;
+  const total = Math.max(n, 1), pct = Math.round(session.correct / total * 100);
+  const r = $('#results'); r.textContent = '';
+  const tbl = (map, labelFn) => {
+    const t = h('table', null, h('tr', null, h('th', null, 'Group'), h('th', null, 'Correct'), h('th', null, '%')));
+    Object.keys(map).sort().forEach(k => { const m = map[k]; t.append(h('tr', null, h('td', null, labelFn(k)), h('td', null, `${m.right} / ${m.total}`), h('td', null, Math.round(m.right/m.total*100) + '%'))); });
+    return t;
+  };
+  r.append(h('div', {class:'card'},
+    h('h2', null, 'Results'),
+    h('div', {class:'score'}, `${session.correct} / ${n}`), h('p', {class:'sub'}, `${pct}% correct`),
+    h('div', {class:'actions'},
+      session.missed.length ? h('button', {class:'primary', type:'button', onclick:() => startSession(shuffle(session.missed))}, `Retry ${session.missed.length} missed`) : null,
+      h('button', {type:'button', onclick:() => { show('setup'); }}, 'Back to setup'))));
+  if (Object.keys(session.byType).length)
+    r.append(h('div', {class:'card'}, h('h2', null, 'By style'), tbl(session.byType, k => TYPE_LABEL[k]), h('h2', {style:'margin-top:16px'}, 'By topic'), tbl(session.byTopic, k => k)));
+  if (session.missed.length){
+    const c = h('div', {class:'card'}, h('h2', null, 'Missed problems'));
+    session.missed.forEach(p => c.append(h('div', {class:'missed'}, h('div', {class:'q'}, p.question), h('div', {class:'a'}, answerLines(p).join('\n')), p.explanation ? h('div', {class:'hint'}, p.explanation) : null)));
+    r.append(c);
+  }
+  show('results');
+}
+</script>
+</body>
+</html>
